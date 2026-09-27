@@ -1,0 +1,1798 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JUP9IW — MWIII Project</title>
+    <meta name="description" content="JUP9IW — A community-driven project focused on preserving and recreating the MWIII experience.">
+    <meta name="theme-color" content="#080808">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================
+           JUP9IW — GLOBAL
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #070707;
+            color: #ffffff;
+            font-family: "Inter", sans-serif;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        ::selection {
+            background: #e10600;
+            color: white;
+        }
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -5;
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+            background-size: 70px 70px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 80%
+            );
+        }
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0.035;
+
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+        }
+
+        .glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+
+            background: rgba(225, 6, 0, 0.08);
+            filter: blur(100px);
+
+            top: -250px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            pointer-events: none;
+            z-index: -4;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            z-index: 100;
+
+            background: rgba(5,5,5,0.65);
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+
+            transition: 0.3s;
+        }
+
+        nav.scrolled {
+            height: 65px;
+            background: rgba(5,5,5,0.92);
+        }
+
+        .logo {
+            font-family: "Rajdhani", sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 5px;
+        }
+
+        .logo span {
+            color: #e10600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            position: relative;
+
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            color: #aaa;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+
+            width: 0;
+            height: 2px;
+
+            background: #e10600;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-button {
+            padding: 11px 20px;
+
+            border: 1px solid rgba(225,6,0,0.5);
+            background: rgba(225,6,0,0.08);
+
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            transition: 0.25s;
+        }
+
+        .nav-button:hover {
+            background: #e10600;
+            border-color: #e10600;
+            transform: translateY(-2px);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .hero {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+
+            padding: 120px 8% 80px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,0,0,0.98) 0%,
+                    rgba(0,0,0,0.72) 45%,
+                    rgba(0,0,0,0.2) 100%
+                );
+
+            z-index: -1;
+        }
+
+        /* Replace this URL with your own JUP9IW background */
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,0,0,0.9),
+                    rgba(0,0,0,0.45),
+                    rgba(0,0,0,0.75)
+                ),
+                url("assets/hero.jpg") center/cover no-repeat;
+
+            z-index: -2;
+
+            transform: scale(1.03);
+        }
+
+        .hero-content {
+            max-width: 850px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.035);
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            color: #bbb;
+
+            margin-bottom: 25px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+
+            background: #35d07f;
+
+            box-shadow: 0 0 12px #35d07f;
+        }
+
+        .hero h1 {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(80px, 13vw, 180px);
+
+            line-height: 0.78;
+
+            font-weight: 700;
+
+            letter-spacing: -5px;
+
+            text-transform: uppercase;
+        }
+
+        .hero h1 span {
+            color: #e10600;
+        }
+
+        .hero-subtitle {
+            margin-top: 30px;
+
+            max-width: 620px;
+
+            color: #aaa;
+
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 15px 27px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #e10600;
+            border-color: #e10600;
+        }
+
+        .btn-primary:hover {
+            background: #ff160f;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(225,6,0,0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 35px;
+            left: 8%;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #666;
+
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 45px;
+            height: 1px;
+            background: #555;
+        }
+
+        /* =========================================================
+           SECTIONS
+        ========================================================= */
+
+        section {
+            padding: 120px 8%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+
+            margin-bottom: 55px;
+        }
+
+        .section-label {
+            color: #e10600;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(45px, 6vw, 80px);
+
+            line-height: 0.9;
+
+            text-transform: uppercase;
+        }
+
+        .section-description {
+            max-width: 430px;
+
+            color: #888;
+
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* =========================================================
+           ABOUT
+        ========================================================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+
+            gap: 60px;
+
+            align-items: center;
+        }
+
+        .about-text {
+            color: #aaa;
+
+            line-height: 1.9;
+
+            font-size: 16px;
+        }
+
+        .about-text strong {
+            color: white;
+        }
+
+        .terminal {
+            background: #0c0c0c;
+
+            border: 1px solid #202020;
+
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        .terminal-bar {
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 0 14px;
+
+            border-bottom: 1px solid #202020;
+        }
+
+        .terminal-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+
+            background: #333;
+        }
+
+        .terminal-content {
+            padding: 25px;
+
+            font-family: monospace;
+            font-size: 13px;
+
+            line-height: 2;
+
+            color: #777;
+        }
+
+        .terminal-content .red {
+            color: #e10600;
+        }
+
+        .terminal-content .white {
+            color: white;
+        }
+
+        /* =========================================================
+           FEATURES
+        ========================================================= */
+
+        .features-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 1px;
+
+            background: #222;
+
+            border: 1px solid #222;
+        }
+
+        .feature {
+            background: #090909;
+
+            padding: 40px;
+
+            min-height: 240px;
+
+            position: relative;
+
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            background: #101010;
+            transform: translateY(-5px);
+        }
+
+        .feature-number {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 13px;
+
+            color: #555;
+
+            letter-spacing: 2px;
+        }
+
+        .feature-icon {
+            margin-top: 35px;
+
+            font-size: 28px;
+
+            color: #e10600;
+        }
+
+        .feature h3 {
+            margin-top: 18px;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 27px;
+
+            text-transform: uppercase;
+        }
+
+        .feature p {
+            margin-top: 10px;
+
+            color: #777;
+
+            line-height: 1.6;
+
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           NEWS
+        ========================================================= */
+
+        .news-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .news-card {
+            border: 1px solid #202020;
+
+            background: #0b0b0b;
+
+            transition: 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-7px);
+
+            border-color: #3b3b3b;
+        }
+
+        .news-image {
+            height: 210px;
+
+            background-size: cover;
+            background-position: center;
+
+            filter: grayscale(30%);
+        }
+
+        .news-content {
+            padding: 25px;
+        }
+
+        .news-date {
+            color: #e10600;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .news-card h3 {
+            margin-top: 12px;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 25px;
+
+            text-transform: uppercase;
+        }
+
+        .news-card p {
+            margin-top: 10px;
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           DOWNLOAD
+        ========================================================= */
+
+        .download {
+            position: relative;
+
+            border-top: 1px solid #191919;
+            border-bottom: 1px solid #191919;
+
+            text-align: center;
+
+            overflow: hidden;
+        }
+
+        .download::before {
+            content: "";
+
+            position: absolute;
+
+            width: 600px;
+            height: 600px;
+
+            border-radius: 50%;
+
+            background: rgba(225,6,0,0.08);
+
+            filter: blur(100px);
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+        }
+
+        .download > * {
+            position: relative;
+        }
+
+        .download h2 {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(55px, 8vw, 100px);
+
+            text-transform: uppercase;
+
+            line-height: 0.9;
+        }
+
+        .download p {
+            max-width: 550px;
+
+            margin: 25px auto;
+
+            color: #888;
+
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           FAQ
+        ========================================================= */
+
+        .faq {
+            max-width: 850px;
+
+            margin: auto;
+        }
+
+        .faq-item {
+            border-top: 1px solid #222;
+        }
+
+        .faq-item:last-child {
+            border-bottom: 1px solid #222;
+        }
+
+        .faq-question {
+            width: 100%;
+
+            padding: 25px 0;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: transparent;
+
+            border: none;
+
+            color: white;
+
+            cursor: pointer;
+
+            text-align: left;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 22px;
+
+            text-transform: uppercase;
+        }
+
+        .faq-question span {
+            color: #e10600;
+        }
+
+        .faq-answer {
+            max-height: 0;
+
+            overflow: hidden;
+
+            color: #777;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+
+            transition: max-height 0.35s ease;
+        }
+
+        .faq-answer p {
+            padding-bottom: 25px;
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 60px 8% 30px;
+
+            border-top: 1px solid #181818;
+
+            background: #050505;
+        }
+
+        .footer-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            padding-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 35px;
+
+            font-weight: 800;
+
+            letter-spacing: 5px;
+        }
+
+        .footer-logo span {
+            color: #e10600;
+        }
+
+        .socials {
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .social {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #252525;
+
+            color: #888;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition: 0.25s;
+        }
+
+        .social:hover {
+            color: white;
+
+            border-color: #e10600;
+
+            background: rgba(225,6,0,0.1);
+        }
+
+        .footer-bottom {
+            padding-top: 25px;
+
+            border-top: 1px solid #181818;
+
+            display: flex;
+            justify-content: space-between;
+
+            color: #555;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+        }
+
+        /* =========================================================
+           REVEAL ANIMATION
+        ========================================================= */
+
+        .reveal {
+            opacity: 0;
+
+            transform: translateY(35px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .nav-links,
+            .nav-button {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero {
+                padding-left: 6%;
+                padding-right: 6%;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                display: block;
+            }
+
+            .section-description {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            section {
+                padding: 80px 6%;
+            }
+
+            .hero h1 {
+                font-size: 85px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-top,
+            .footer-bottom {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+    <div class="glow"></div>
+    <div class="noise"></div>
+
+    <!-- =========================================================
+         NAVIGATION
+    ========================================================== -->
+
+    <nav id="navbar">
+
+        <a href="#" class="logo">
+            JUP<span>9</span>IW
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#news">News</a></li>
+            <li><a href="#download">Download</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+
+        <!-- Replace with your Discord invite -->
+
+        <a href="https://discord.com/" target="_blank" class="nav-button">
+            Discord
+        </a>
+
+        <div class="mobile-menu" onclick="toggleMenu()">
+            ☰
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <header class="hero">
+
+        <div class="hero-image"></div>
+
+        <div class="hero-content reveal">
+
+            <div class="status">
+                <div class="status-dot"></div>
+                Project in development
+            </div>
+
+            <h1>
+                JUP<span>9</span>IW
+            </h1>
+
+            <p class="hero-subtitle">
+                A community-driven project dedicated to bringing back
+                the MWIII experience through preservation, research
+                and custom development.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#download" class="btn btn-primary">
+                    Get JUP9IW
+                </a>
+
+                <a href="#about" class="btn btn-secondary">
+                    Explore Project
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            Scroll to explore
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         ABOUT
+    ========================================================== -->
+
+    <section id="about">
+
+        <div class="section-header reveal">
+
+            <div>
+                <div class="section-label">
+                    01 / The Project
+                </div>
+
+                <h2 class="section-title">
+                    Built for<br>the community.
+                </h2>
+            </div>
+
+            <p class="section-description">
+                JUP9IW is a personal/community development project
+                focused on experimentation, preservation and
+                understanding of the MWIII-era experience.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-text reveal">
+
+                <p>
+                    <strong>JUP9IW</strong> is being developed as a
+                    community project for people interested in
+                    Call of Duty, game preservation and custom
+                    development.
+                </p>
+
+                <br>
+
+                <p>
+                    The goal is to create a modern and organized
+                    platform where project updates, development
+                    information and community resources can be
+                    shared in one place.
+                </p>
+
+                <br>
+
+                <p>
+                    Development is an ongoing process. Features,
+                    compatibility and project information may change
+                    as the project evolves.
+                </p>
+
+            </div>
+
+
+            <div class="terminal reveal">
+
+                <div class="terminal-bar">
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                </div>
+
+                <div class="terminal-content">
+
+                    <div>
+                        <span class="red">$</span>
+                        initializing jup9iw...
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        project =
+                        <span class="white">"JUP9IW"</span>
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        target =
+                        <span class="white">"MWIII"</span>
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        status =
+                        <span class="white">"DEVELOPMENT"</span>
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <span class="red">></span>
+                        system ready.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FEATURES
+    ========================================================== -->
+
+    <section id="features">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    02 / Features
+                </div>
+
+                <h2 class="section-title">
+                    What's<br>inside.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+                The project is continuously evolving. Here's a
+                glimpse at the areas JUP9IW focuses on.
+            </p>
+
+        </div>
+
+
+        <div class="features-grid">
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    001
+                </div>
+
+                <div class="feature-icon">
+                    ◈
+                </div>
+
+                <h3>
+                    Preservation
+                </h3>
+
+                <p>
+                    Research and preservation of the MWIII-era
+                    experience and its technology.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    002
+                </div>
+
+                <div class="feature-icon">
+                    ⬡
+                </div>
+
+                <h3>
+                    Custom Development
+                </h3>
+
+                <p>
+                    Experimental systems and tools developed
+                    specifically for the project.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    003
+                </div>
+
+                <div class="feature-icon">
+                    ◎
+                </div>
+
+                <h3>
+                    Community
+                </h3>
+
+                <p>
+                    A place for developers, players and enthusiasts
+                    to follow the project's progress.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    004
+                </div>
+
+                <div class="feature-icon">
+                    ⌁
+                </div>
+
+                <h3>
+                    Research
+                </h3>
+
+                <p>
+                    Technical experimentation and documentation
+                    surrounding the project.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    005
+                </div>
+
+                <div class="feature-icon">
+                    ◫
+                </div>
+
+                <h3>
+                    Updates
+                </h3>
+
+                <p>
+                    Follow development progress and discover
+                    new project milestones.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    006
+                </div>
+
+                <div class="feature-icon">
+                    +
+                </div>
+
+                <h3>
+                    More Coming
+                </h3>
+
+                <p>
+                    JUP9IW is still evolving. More systems and
+                    features will be announced over time.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         NEWS
+    ========================================================== -->
+
+    <section id="news">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    03 / Intelligence
+                </div>
+
+                <h2 class="section-title">
+                    Latest<br>updates.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+                Development updates and announcements from the
+                JUP9IW project.
+            </p>
+
+        </div>
+
+
+        <div class="news-grid">
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news1.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        27.09.2026
+                    </div>
+
+                    <h3>
+                        JUP9IW is coming
+                    </h3>
+
+                    <p>
+                        Development continues behind the scenes.
+                        More information will be released soon.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news2.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        DEVELOPMENT
+                    </div>
+
+                    <h3>
+                        Project infrastructure
+                    </h3>
+
+                    <p>
+                        Work is currently focused on the core
+                        infrastructure and development environment.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news3.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        COMMUNITY
+                    </div>
+
+                    <h3>
+                        Join the community
+                    </h3>
+
+                    <p>
+                        Follow the project and stay informed through
+                        the official community channels.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         DOWNLOAD
+    ========================================================== -->
+
+    <section id="download" class="download">
+
+        <div class="section-label reveal">
+            04 / Access
+        </div>
+
+        <h2 class="reveal">
+            Ready to<br>
+            <span style="color:#e10600;">
+                deploy?
+            </span>
+        </h2>
+
+        <p class="reveal">
+            Follow the project, join the community and keep an eye
+            on future releases and development announcements.
+        </p>
+
+        <div class="hero-buttons reveal"
+             style="justify-content:center;">
+
+            <!-- Replace with your real GitHub release/download URL -->
+
+            <a
+                href="https://github.com/"
+                target="_blank"
+                class="btn btn-primary">
+                GitHub
+            </a>
+
+            <!-- Replace with your Discord invite -->
+
+            <a
+                href="https://discord.com/"
+                target="_blank"
+                class="btn btn-secondary">
+                Discord
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FAQ
+    ========================================================== -->
+
+    <section id="faq">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    05 / Information
+                </div>
+
+                <h2 class="section-title">
+                    Frequently<br>asked.
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="faq">
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    What is JUP9IW?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        JUP9IW is a community-driven project focused
+                        on research, preservation and custom development
+                        related to the MWIII-era Call of Duty experience.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Is the project finished?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        No. JUP9IW is currently under development.
+                        Features and project information may change
+                        as development progresses.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Where can I follow development?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        Follow the official GitHub repository and
+                        community Discord for announcements and
+                        development updates.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Can I contribute?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        Contribution opportunities can be announced
+                        through the project's official channels as
+                        the project develops.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
+
+        <div class="footer-top">
+
+            <div class="footer-logo">
+                JUP<span>9</span>IW
+            </div>
+
+            <div class="socials">
+
+                <a
+                    href="https://github.com/"
+                    target="_blank"
+                    class="social">
+                    GH
+                </a>
+
+                <a
+                    href="https://discord.com/"
+                    target="_blank"
+                    class="social">
+                    DC
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 JUP9IW. All rights reserved.
+            </span>
+
+            <span>
+                COMMUNITY PROJECT
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        const navbar = document.getElementById("navbar");
+
+        window.addEventListener("scroll", () => {
+
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+
+        });
+
+
+        /* =====================================================
+           REVEAL ANIMATION
+        ===================================================== */
+
+        const revealElements =
+            document.querySelectorAll(".reveal");
+
+        const revealObserver =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("visible");
+
+                            revealObserver.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+
+        /* =====================================================
+           FAQ
+        ===================================================== */
+
+        const questions =
+            document.querySelectorAll(".faq-question");
+
+        questions.forEach(question => {
+
+            question.addEventListener("click", () => {
+
+                const answer =
+                    question.nextElementSibling;
+
+                const symbol =
+                    question.querySelector("span");
+
+
+                document
+                    .querySelectorAll(".faq-answer")
+                    .forEach(other => {
+
+                        if (other !== answer) {
+                            other.style.maxHeight = null;
+                        }
+
+                    });
+
+
+                document
+                    .querySelectorAll(".faq-question span")
+                    .forEach(otherSymbol => {
+
+                        if (otherSymbol !== symbol) {
+                            otherSymbol.textContent = "+";
+                        }
+
+                    });
+
+
+                if (answer.style.maxHeight) {
+
+                    answer.style.maxHeight = null;
+
+                    symbol.textContent = "+";
+
+                } else {
+
+                    answer.style.maxHeight =
+                        answer.scrollHeight + "px";
+
+                    symbol.textContent = "−";
+
+                }
+
+            });
+
+        });
+
+
+        /* =====================================================
+           MOBILE MENU
+        ===================================================== */
+
+        function toggleMenu() {
+
+            const links =
+                document.querySelector(".nav-links");
+
+            if (links.style.display === "flex") {
+
+                links.style.display = "none";
+
+            } else {
+
+                links.style.display = "flex";
+
+                links.style.position = "absolute";
+                links.style.top = "65px";
+                links.style.left = "0";
+                links.style.width = "100%";
+
+                links.style.flexDirection = "column";
+
+                links.style.padding = "25px";
+
+                links.style.background =
+                    "rgba(5,5,5,.97)";
+
+                links.style.borderBottom =
+                    "1px solid #222";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
+```
