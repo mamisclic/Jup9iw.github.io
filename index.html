@@ -922,6 +922,141 @@
         }
 
         /* =========================================================
+           SEASON 6 — HALLOWEEN
+        ========================================================= */
+
+        .season6-section {
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid #191919;
+            border-bottom: 1px solid #191919;
+            background:
+                radial-gradient(circle at 80% 20%, rgba(255,102,0,.10), transparent 30%),
+                radial-gradient(circle at 20% 80%, rgba(225,6,0,.08), transparent 32%),
+                #080808;
+        }
+
+        .season6-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: .35;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(255,102,0,.13) 0 2px, transparent 3px),
+                radial-gradient(circle at 70% 70%, rgba(255,255,255,.06) 0 1px, transparent 2px);
+            background-size: 150px 150px, 90px 90px;
+        }
+
+        .season6-section > *:not(.season6-bg) { position: relative; }
+        .season6-orange { color: #ff6500; }
+
+        .season6-hero-card {
+            padding: 55px;
+            border: 1px solid rgba(255,101,0,.25);
+            background: linear-gradient(135deg, rgba(255,101,0,.08), transparent 45%), #0b0b0b;
+            box-shadow: 0 30px 100px rgba(0,0,0,.45);
+        }
+
+        .season6-badge, .mini-tag {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 7px 11px;
+            border: 1px solid rgba(255,101,0,.35);
+            color: #ff8a3d;
+            background: rgba(255,101,0,.07);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .season6-hero-card h3 {
+            margin-top: 18px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(55px, 8vw, 100px);
+            line-height: .85;
+            text-transform: uppercase;
+        }
+
+        .season6-hero-card > p {
+            max-width: 800px;
+            margin-top: 24px;
+            color: #999;
+            line-height: 1.8;
+        }
+
+        .unlock-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            margin-top: 40px;
+            background: #252525;
+            border: 1px solid #252525;
+        }
+
+        .unlock-item {
+            min-height: 145px;
+            padding: 25px;
+            background: #0a0a0a;
+            transition: .25s;
+        }
+
+        .unlock-item:hover { background: #111; transform: translateY(-3px); }
+        .unlock-item span { color: #555; font-family: "Rajdhani", sans-serif; font-size: 12px; letter-spacing: 2px; }
+        .unlock-item strong { display: block; margin-top: 20px; font-family: "Rajdhani", sans-serif; font-size: 22px; }
+        .unlock-item small { display: block; margin-top: 7px; color: #666; line-height: 1.5; }
+
+        .season6-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            margin-top: 35px;
+            background: #252525;
+            border: 1px solid #252525;
+        }
+
+        .season6-card {
+            min-height: 310px;
+            padding: 38px;
+            background: #090909;
+            transition: .3s;
+        }
+
+        .season6-card:hover { background: #101010; transform: translateY(-5px); }
+        .season6-card h3 { margin-top: 18px; font-family: "Rajdhani", sans-serif; font-size: 29px; text-transform: uppercase; }
+        .season6-card p { margin-top: 12px; color: #777; line-height: 1.7; font-size: 13px; }
+        .season6-card .feature-icon { color: #ff6500; }
+        .season6-card .mini-tag { margin-top: 25px; }
+
+        .halloween-tag { border-color: rgba(225,6,0,.4); color: #ff4b43; }
+
+        .map-seasons { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 25px; }
+        .map-seasons span {
+            padding: 7px 10px;
+            border: 1px solid #292929;
+            background: #0e0e0e;
+            color: #aaa;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .season6-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            margin-top: 35px;
+            padding: 35px 40px;
+            border-left: 3px solid #ff6500;
+            background: #0b0b0b;
+        }
+
+        .season6-bottom .section-label { margin-bottom: 5px; color: #ff6500; }
+        .season6-bottom h3 { font-family: "Rajdhani", sans-serif; font-size: 34px; text-transform: uppercase; }
+        .season6-bottom p { max-width: 650px; color: #777; line-height: 1.7; font-size: 13px; }
+
+        /* =========================================================
            RESPONSIVE
         ========================================================= */
 
@@ -947,6 +1082,14 @@
 
             .features-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+
+            .unlock-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .season6-columns {
+                grid-template-columns: 1fr;
             }
 
             .news-grid {
@@ -979,6 +1122,19 @@
 
             .features-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .unlock-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .season6-hero-card {
+                padding: 30px;
+            }
+
+            .season6-bottom {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .language-switcher {
@@ -1016,6 +1172,7 @@
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#features">Features</a></li>
+            <li><a href="#season6">Season 6</a></li>
             <li><a href="#news">News</a></li>
             <li><a href="#download">Download</a></li>
             <li><a href="#faq">FAQ</a></li>
@@ -1358,6 +1515,97 @@
 
     </section>
 
+
+    <!-- =========================================================
+         SEASON 6 — HALLOWEEN
+    ========================================================== -->
+
+    <section id="season6" class="season6-section">
+
+        <div class="season6-bg"></div>
+
+        <div class="section-header reveal">
+            <div>
+                <div class="section-label">03 / Saison 6</div>
+                <h2 class="section-title">Saison 6<br><span class="season6-orange">Halloween.</span></h2>
+            </div>
+            <p class="section-description">
+                La Saison 6 apporte une expérience complète avec progression maximale,
+                contenu débloqué et multijoueur local.
+            </p>
+        </div>
+
+        <div class="season6-hero-card reveal">
+            <div class="season6-badge">S6 / ÉVÉNEMENT HALLOWEEN</div>
+            <h3>UNLOCK ALL</h3>
+            <p>
+                Le compte démarre avec l'ensemble du contenu disponible de la Saison 6.
+                Toutes les armes, variantes, couteaux, skins, exécutions, camouflages,
+                autocollants et autres éléments de personnalisation sont accessibles.
+            </p>
+
+            <div class="unlock-grid">
+                <div class="unlock-item"><span>01</span><strong>ARMES</strong><small>Toutes les armes débloquées</small></div>
+                <div class="unlock-item"><span>02</span><strong>VARIANTES</strong><small>Toutes les variantes disponibles</small></div>
+                <div class="unlock-item"><span>03</span><strong>ARMES DE MÊLÉE</strong><small>Couteaux et autres équipements</small></div>
+                <div class="unlock-item"><span>04</span><strong>SKINS</strong><small>Personnalisations et opérateurs</small></div>
+                <div class="unlock-item"><span>05</span><strong>EXÉCUTIONS</strong><small>Toutes les exécutions accessibles</small></div>
+                <div class="unlock-item"><span>06</span><strong>CAMOUFLAGES</strong><small>Camouflages et récompenses</small></div>
+                <div class="unlock-item"><span>07</span><strong>AUTOCOLLANTS</strong><small>Autocollants et personnalisation</small></div>
+                <div class="unlock-item"><span>08</span><strong>NIVEAU MAX</strong><small>Progression au niveau maximum</small></div>
+            </div>
+        </div>
+
+        <div class="season6-columns">
+            <div class="season6-card reveal">
+                <div class="feature-number">S6 / 01</div>
+                <div class="feature-icon">☠</div>
+                <h3>Multijoueur local</h3>
+                <p>
+                    Jouez également en multijoueur local. La Saison 6 inclut
+                    l'expérience locale avec les cartes disponibles dans le projet.
+                </p>
+                <div class="mini-tag">LOCAL MULTIPLAYER</div>
+            </div>
+
+            <div class="season6-card reveal">
+                <div class="feature-number">S6 / 02</div>
+                <div class="feature-icon">▣</div>
+                <h3>Toutes les maps</h3>
+                <p>
+                    Le multijoueur regroupe les cartes des Saisons 1, 2, 3, 4, 5 et 6,
+                    pour retrouver l'ensemble du contenu dans une seule version.
+                </p>
+                <div class="map-seasons">
+                    <span>S1</span><span>S2</span><span>S3</span>
+                    <span>S4</span><span>S5</span><span>S6</span>
+                </div>
+            </div>
+
+            <div class="season6-card reveal">
+                <div class="feature-number">S6 / 03</div>
+                <div class="feature-icon">☾</div>
+                <h3>Ambiance Halloween</h3>
+                <p>
+                    La Saison 6 adopte une ambiance Halloween avec son identité,
+                    ses éléments de personnalisation et son contenu thématique.
+                </p>
+                <div class="mini-tag halloween-tag">HALLOWEEN SEASON</div>
+            </div>
+        </div>
+
+        <div class="season6-bottom reveal">
+            <div>
+                <span class="section-label">FULL CONTENT</span>
+                <h3>Tout au niveau maximum.</h3>
+            </div>
+            <p>
+                Saison 6 activée • Unlock All • toutes les catégories de contenu
+                accessibles • multijoueur local • maps S1 → S6 • niveau maximum.
+            </p>
+        </div>
+
+    </section>
 
     <!-- =========================================================
          NEWS
@@ -1769,323 +2017,4 @@
                             other.style.maxHeight = null;
                         }
 
-                    });
-
-
-                document
-                    .querySelectorAll(".faq-question span")
-                    .forEach(otherSymbol => {
-
-                        if (otherSymbol !== symbol) {
-                            otherSymbol.textContent = "+";
-                        }
-
-                    });
-
-
-                if (answer.style.maxHeight) {
-
-                    answer.style.maxHeight = null;
-
-                    symbol.textContent = "+";
-
-                } else {
-
-                    answer.style.maxHeight =
-                        answer.scrollHeight + "px";
-
-                    symbol.textContent = "−";
-
-                }
-
-            });
-
-        });
-
-
-        /* =====================================================
-           LANGUAGE SWITCHER
-        ===================================================== */
-
-        const translations = {
-            fr: {
-                "nav.about": "À propos",
-                "nav.features": "Fonctionnalités",
-                "nav.news": "Actualités",
-                "nav.download": "Téléchargement",
-                "nav.faq": "FAQ",
-                "hero.status": "Projet en développement",
-                "hero.subtitle": "Un projet communautaire dédié à faire revivre l'expérience MWIII grâce à la préservation, la recherche et au développement personnalisé.",
-                "hero.get": "Obtenir JUP9IW",
-                "hero.explore": "Découvrir le projet",
-                "hero.scroll": "Faites défiler pour explorer",
-
-                "about.label": "01 / Le projet",
-                "about.title": "Créé pour<br>la communauté.",
-                "about.description": "JUP9IW est un projet personnel et communautaire axé sur l'expérimentation, la préservation et la compréhension de l'expérience de l'ère MWIII.",
-                "about.p1": "<strong>JUP9IW</strong> est développé comme un projet communautaire pour les personnes intéressées par Call of Duty, la préservation des jeux et le développement personnalisé.",
-                "about.p2": "L'objectif est de créer une plateforme moderne et organisée où les actualités du projet, les informations de développement et les ressources communautaires peuvent être regroupées au même endroit.",
-                "about.p3": "Le développement est toujours en cours. Les fonctionnalités, la compatibilité et les informations du projet peuvent évoluer au fil de son développement.",
-                "terminal.init": "initialisation de jup9iw...",
-                "terminal.project": "projet =",
-                "terminal.target": "cible =",
-                "terminal.status": "statut =",
-                "terminal.ready": "système prêt.",
-
-                "features.label": "02 / Fonctionnalités",
-                "features.title": "Ce qu'il<br>contient.",
-                "features.description": "Le projet évolue constamment. Voici un aperçu des domaines sur lesquels JUP9IW se concentre.",
-                "feature.1.title": "Préservation",
-                "feature.1.text": "Recherche et préservation de l'expérience de l'ère MWIII et de ses technologies.",
-                "feature.2.title": "Développement personnalisé",
-                "feature.2.text": "Systèmes expérimentaux et outils développés spécifiquement pour le projet.",
-                "feature.3.title": "Communauté",
-                "feature.3.text": "Un espace pour les développeurs, joueurs et passionnés afin de suivre l'avancement du projet.",
-                "feature.4.title": "Recherche",
-                "feature.4.text": "Expérimentation technique et documentation autour du projet.",
-                "feature.5.title": "Actualités",
-                "feature.5.text": "Suivez l'avancement du développement et découvrez les nouvelles étapes du projet.",
-                "feature.6.title": "Plus à venir",
-                "feature.6.text": "JUP9IW continue d'évoluer. De nouveaux systèmes et fonctionnalités seront annoncés avec le temps.",
-
-                "news.label": "03 / Actualités",
-                "news.title": "Dernières<br>actualités.",
-                "news.description": "Actualités du développement et annonces du projet JUP9IW.",
-                "news.1.title": "JUP9IW arrive",
-                "news.1.text": "Le développement continue en coulisses. Plus d'informations seront publiées prochainement.",
-                "news.2.tag": "DÉVELOPPEMENT",
-                "news.2.title": "Infrastructure du projet",
-                "news.2.text": "Le travail porte actuellement sur l'infrastructure principale et l'environnement de développement.",
-                "news.3.tag": "COMMUNAUTÉ",
-                "news.3.title": "Rejoignez la communauté",
-                "news.3.text": "Suivez le projet et restez informé grâce aux canaux officiels de la communauté.",
-
-                "download.label": "04 / Accès",
-                "download.title": "Prêt à<br><span style=\"color:#e10600;\">déployer ?</span>",
-                "download.text": "Suivez le projet, rejoignez la communauté et gardez un œil sur les prochaines sorties et annonces de développement.",
-
-                "faq.label": "05 / Informations",
-                "faq.title": "Questions<br>fréquentes.",
-                "faq.1.q": "Qu'est-ce que JUP9IW ?",
-                "faq.1.a": "JUP9IW est un projet communautaire axé sur la recherche, la préservation et le développement personnalisé autour de l'expérience Call of Duty de l'ère MWIII.",
-                "faq.2.q": "Le projet est-il terminé ?",
-                "faq.2.a": "Non. JUP9IW est actuellement en développement. Les fonctionnalités et les informations du projet peuvent évoluer au fur et à mesure du développement.",
-                "faq.3.q": "Où suivre le développement ?",
-                "faq.3.a": "Suivez le dépôt GitHub officiel et le Discord communautaire pour les annonces et les mises à jour du développement.",
-                "faq.4.q": "Puis-je contribuer ?",
-                "faq.4.a": "Les possibilités de contribution peuvent être annoncées sur les canaux officiels du projet au fur et à mesure de son développement.",
-
-                "footer.rights": "© 2026 JUP9IW. Tous droits réservés.",
-                "footer.community": "PROJET COMMUNAUTAIRE"
-            },
-
-            en: {
-                "nav.about": "About",
-                "nav.features": "Features",
-                "nav.news": "News",
-                "nav.download": "Download",
-                "nav.faq": "FAQ",
-                "hero.status": "Project in development",
-                "hero.subtitle": "A community-driven project dedicated to bringing back the MWIII experience through preservation, research and custom development.",
-                "hero.get": "Get JUP9IW",
-                "hero.explore": "Explore Project",
-                "hero.scroll": "Scroll to explore",
-
-                "about.label": "01 / The Project",
-                "about.title": "Built for<br>the community.",
-                "about.description": "JUP9IW is a personal and community development project focused on experimentation, preservation and understanding of the MWIII-era experience.",
-                "about.p1": "<strong>JUP9IW</strong> is being developed as a community project for people interested in Call of Duty, game preservation and custom development.",
-                "about.p2": "The goal is to create a modern and organized platform where project updates, development information and community resources can be shared in one place.",
-                "about.p3": "Development is an ongoing process. Features, compatibility and project information may change as the project evolves.",
-                "terminal.init": "initializing jup9iw...",
-                "terminal.project": "project =",
-                "terminal.target": "target =",
-                "terminal.status": "status =",
-                "terminal.ready": "system ready.",
-
-                "features.label": "02 / Features",
-                "features.title": "What's<br>inside.",
-                "features.description": "The project is continuously evolving. Here's a glimpse at the areas JUP9IW focuses on.",
-                "feature.1.title": "Preservation",
-                "feature.1.text": "Research and preservation of the MWIII-era experience and its technology.",
-                "feature.2.title": "Custom Development",
-                "feature.2.text": "Experimental systems and tools developed specifically for the project.",
-                "feature.3.title": "Community",
-                "feature.3.text": "A place for developers, players and enthusiasts to follow the project's progress.",
-                "feature.4.title": "Research",
-                "feature.4.text": "Technical experimentation and documentation surrounding the project.",
-                "feature.5.title": "Updates",
-                "feature.5.text": "Follow development progress and discover new project milestones.",
-                "feature.6.title": "More Coming",
-                "feature.6.text": "JUP9IW is still evolving. More systems and features will be announced over time.",
-
-                "news.label": "03 / Intelligence",
-                "news.title": "Latest<br>updates.",
-                "news.description": "Development updates and announcements from the JUP9IW project.",
-                "news.1.title": "JUP9IW is coming",
-                "news.1.text": "Development continues behind the scenes. More information will be released soon.",
-                "news.2.tag": "DEVELOPMENT",
-                "news.2.title": "Project infrastructure",
-                "news.2.text": "Work is currently focused on the core infrastructure and development environment.",
-                "news.3.tag": "COMMUNITY",
-                "news.3.title": "Join the community",
-                "news.3.text": "Follow the project and stay informed through the official community channels.",
-
-                "download.label": "04 / Access",
-                "download.title": "Ready to<br><span style=\"color:#e10600;\">deploy?</span>",
-                "download.text": "Follow the project, join the community and keep an eye on future releases and development announcements.",
-
-                "faq.label": "05 / Information",
-                "faq.title": "Frequently<br>asked.",
-                "faq.1.q": "What is JUP9IW?",
-                "faq.1.a": "JUP9IW is a community-driven project focused on research, preservation and custom development related to the MWIII-era Call of Duty experience.",
-                "faq.2.q": "Is the project finished?",
-                "faq.2.a": "No. JUP9IW is currently under development. Features and project information may change as development progresses.",
-                "faq.3.q": "Where can I follow development?",
-                "faq.3.a": "Follow the official GitHub repository and community Discord for announcements and development updates.",
-                "faq.4.q": "Can I contribute?",
-                "faq.4.a": "Contribution opportunities can be announced through the project's official channels as the project develops.",
-
-                "footer.rights": "© 2026 JUP9IW. All rights reserved.",
-                "footer.community": "COMMUNITY PROJECT"
-            }
-        };
-
-        const languageElements = [
-            ["nav.about", ".nav-links li:nth-child(1) a"],
-            ["nav.features", ".nav-links li:nth-child(2) a"],
-            ["nav.news", ".nav-links li:nth-child(3) a"],
-            ["nav.download", ".nav-links li:nth-child(4) a"],
-            ["nav.faq", ".nav-links li:nth-child(5) a"],
-            ["hero.status", ".status"],
-            ["hero.subtitle", ".hero-subtitle"],
-            ["hero.get", ".hero-buttons .btn-primary"],
-            ["hero.explore", ".hero-buttons .btn-secondary"],
-            ["hero.scroll", ".scroll-indicator"],
-            ["about.label", "#about .section-label"],
-            ["about.title", "#about .section-title"],
-            ["about.description", "#about .section-description"],
-            ["about.p1", "#about .about-text p:nth-of-type(1)"],
-            ["about.p2", "#about .about-text p:nth-of-type(2)"],
-            ["about.p3", "#about .about-text p:nth-of-type(3)"],
-            ["terminal.init", ".terminal-content > div:nth-child(1)"],
-            ["terminal.project", ".terminal-content > div:nth-child(2)"],
-            ["terminal.target", ".terminal-content > div:nth-child(3)"],
-            ["terminal.status", ".terminal-content > div:nth-child(4)"],
-            ["terminal.ready", ".terminal-content > div:nth-child(6)"],
-            ["features.label", "#features .section-label"],
-            ["features.title", "#features .section-title"],
-            ["features.description", "#features .section-description"],
-            ["feature.1.title", ".feature:nth-child(1) h3"],
-            ["feature.1.text", ".feature:nth-child(1) p"],
-            ["feature.2.title", ".feature:nth-child(2) h3"],
-            ["feature.2.text", ".feature:nth-child(2) p"],
-            ["feature.3.title", ".feature:nth-child(3) h3"],
-            ["feature.3.text", ".feature:nth-child(3) p"],
-            ["feature.4.title", ".feature:nth-child(4) h3"],
-            ["feature.4.text", ".feature:nth-child(4) p"],
-            ["feature.5.title", ".feature:nth-child(5) h3"],
-            ["feature.5.text", ".feature:nth-child(5) p"],
-            ["feature.6.title", ".feature:nth-child(6) h3"],
-            ["feature.6.text", ".feature:nth-child(6) p"],
-            ["news.label", "#news .section-label"],
-            ["news.title", "#news .section-title"],
-            ["news.description", "#news .section-description"],
-            ["news.1.title", ".news-card:nth-child(1) h3"],
-            ["news.1.text", ".news-card:nth-child(1) p"],
-            ["news.2.tag", ".news-card:nth-child(2) .news-date"],
-            ["news.2.title", ".news-card:nth-child(2) h3"],
-            ["news.2.text", ".news-card:nth-child(2) p"],
-            ["news.3.tag", ".news-card:nth-child(3) .news-date"],
-            ["news.3.title", ".news-card:nth-child(3) h3"],
-            ["news.3.text", ".news-card:nth-child(3) p"],
-            ["download.label", "#download .section-label"],
-            ["download.title", "#download h2"],
-            ["download.text", "#download > p"],
-            ["faq.label", "#faq .section-label"],
-            ["faq.title", "#faq .section-title"],
-            ["faq.1.q", ".faq-item:nth-child(1) .faq-question"],
-            ["faq.1.a", ".faq-item:nth-child(1) .faq-answer p"],
-            ["faq.2.q", ".faq-item:nth-child(2) .faq-question"],
-            ["faq.2.a", ".faq-item:nth-child(2) .faq-answer p"],
-            ["faq.3.q", ".faq-item:nth-child(3) .faq-question"],
-            ["faq.3.a", ".faq-item:nth-child(3) .faq-answer p"],
-            ["faq.4.q", ".faq-item:nth-child(4) .faq-question"],
-            ["faq.4.a", ".faq-item:nth-child(4) .faq-answer p"],
-            ["footer.rights", ".footer-bottom span:nth-child(1)"],
-            ["footer.community", ".footer-bottom span:nth-child(2)"]
-        ];
-
-        function setLanguage(lang) {
-            const dictionary = translations[lang];
-
-            languageElements.forEach(([key, selector]) => {
-                const element = document.querySelector(selector);
-                if (element && dictionary[key] !== undefined) {
-                    element.innerHTML = dictionary[key];
-                }
-            });
-
-            document.documentElement.lang = lang;
-
-            document.querySelectorAll(".language-switcher button").forEach(button => {
-                button.classList.toggle("active", button.dataset.lang === lang);
-            });
-
-            localStorage.setItem("jup9iw-language", lang);
-        }
-
-        document.querySelectorAll(".language-switcher button").forEach(button => {
-            button.addEventListener("click", () => {
-                setLanguage(button.dataset.lang);
-            });
-        });
-
-        const savedLanguage = localStorage.getItem("jup9iw-language");
-        const browserLanguage = navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
-        setLanguage(savedLanguage || browserLanguage);
-
-
-
-        /* =====================================================
-           MOBILE MENU
-        ===================================================== */
-
-        function toggleMenu() {
-
-            const links =
-                document.querySelector(".nav-links");
-
-            if (links.style.display === "flex") {
-
-                links.style.display = "none";
-
-            } else {
-
-                links.style.display = "flex";
-
-                links.style.position = "absolute";
-                links.style.top = "65px";
-                links.style.left = "0";
-                links.style.width = "100%";
-
-                links.style.flexDirection = "column";
-
-                links.style.padding = "25px";
-
-                links.style.background =
-                    "rgba(5,5,5,.97)";
-
-                links.style.borderBottom =
-                    "1px solid #222";
-
-            }
-
-        }
-
-    </script>
-
-</body>
-</html>
-
-```
+           ... (18 Ko restants)
