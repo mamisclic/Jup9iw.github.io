@@ -1,0 +1,2346 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JUP9IW — MWIII Project</title>
+    <meta name="description" content="JUP9IW — A community-driven project focused on preserving and recreating the MWIII experience.">
+    <meta name="theme-color" content="#080808">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================
+           JUP9IW — GLOBAL
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #070707;
+            color: #ffffff;
+            font-family: "Inter", sans-serif;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        ::selection {
+            background: #e10600;
+            color: white;
+        }
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -5;
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+            background-size: 70px 70px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 80%
+            );
+        }
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0.035;
+
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+        }
+
+        .glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+
+            background: rgba(225, 6, 0, 0.08);
+            filter: blur(100px);
+
+            top: -250px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            pointer-events: none;
+            z-index: -4;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            z-index: 100;
+
+            background: rgba(5,5,5,0.65);
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+
+            transition: 0.3s;
+        }
+
+        nav.scrolled {
+            height: 65px;
+            background: rgba(5,5,5,0.92);
+        }
+
+        .logo {
+            font-family: "Rajdhani", sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 5px;
+        }
+
+        .logo span {
+            color: #e10600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            position: relative;
+
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            color: #aaa;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+
+            width: 0;
+            height: 2px;
+
+            background: #e10600;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-button {
+            padding: 11px 20px;
+
+            border: 1px solid rgba(225,6,0,0.5);
+            background: rgba(225,6,0,0.08);
+
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            transition: 0.25s;
+        }
+
+        .nav-button:hover {
+            background: #e10600;
+            border-color: #e10600;
+            transform: translateY(-2px);
+        }
+
+        /* =====================================================
+           LANGUAGE SWITCHER
+        ===================================================== */
+
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 14px;
+            padding: 4px;
+            border: 1px solid #252525;
+            border-radius: 8px;
+            background: rgba(255,255,255,.03);
+        }
+
+        .language-switcher button {
+            border: 0;
+            background: transparent;
+            color: #777;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            padding: 7px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .language-switcher button:hover {
+            color: #fff;
+        }
+
+        .language-switcher button.active {
+            color: #fff;
+            background: #e10600;
+        }
+
+
+        .mobile-menu {
+            display: none;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .hero {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+
+            padding: 120px 8% 80px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,0,0,0.98) 0%,
+                    rgba(0,0,0,0.72) 45%,
+                    rgba(0,0,0,0.2) 100%
+                );
+
+            z-index: -1;
+        }
+
+        /* Replace this URL with your own JUP9IW background */
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,0,0,0.9),
+                    rgba(0,0,0,0.45),
+                    rgba(0,0,0,0.75)
+                ),
+                url("assets/hero.jpg") center/cover no-repeat;
+
+            z-index: -2;
+
+            transform: scale(1.03);
+        }
+
+        .hero-content {
+            max-width: 850px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.035);
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            color: #bbb;
+
+            margin-bottom: 25px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+
+            background: #35d07f;
+
+            box-shadow: 0 0 12px #35d07f;
+        }
+
+        .hero h1 {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(80px, 13vw, 180px);
+
+            line-height: 0.78;
+
+            font-weight: 700;
+
+            letter-spacing: -5px;
+
+            text-transform: uppercase;
+        }
+
+        .hero h1 span {
+            color: #e10600;
+        }
+
+        .hero-subtitle {
+            margin-top: 30px;
+
+            max-width: 620px;
+
+            color: #aaa;
+
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 15px 27px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #e10600;
+            border-color: #e10600;
+        }
+
+        .btn-primary:hover {
+            background: #ff160f;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(225,6,0,0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 35px;
+            left: 8%;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #666;
+
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 45px;
+            height: 1px;
+            background: #555;
+        }
+
+        /* =========================================================
+           SECTIONS
+        ========================================================= */
+
+        section {
+            padding: 120px 8%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+
+            margin-bottom: 55px;
+        }
+
+        .section-label {
+            color: #e10600;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(45px, 6vw, 80px);
+
+            line-height: 0.9;
+
+            text-transform: uppercase;
+        }
+
+        .section-description {
+            max-width: 430px;
+
+            color: #888;
+
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* =========================================================
+           ABOUT
+        ========================================================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+
+            gap: 60px;
+
+            align-items: center;
+        }
+
+        .about-text {
+            color: #aaa;
+
+            line-height: 1.9;
+
+            font-size: 16px;
+        }
+
+        .about-text strong {
+            color: white;
+        }
+
+        .terminal {
+            background: #0c0c0c;
+
+            border: 1px solid #202020;
+
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        .terminal-bar {
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 0 14px;
+
+            border-bottom: 1px solid #202020;
+        }
+
+        .terminal-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+
+            background: #333;
+        }
+
+        .terminal-content {
+            padding: 25px;
+
+            font-family: monospace;
+            font-size: 13px;
+
+            line-height: 2;
+
+            color: #777;
+        }
+
+        .terminal-content .red {
+            color: #e10600;
+        }
+
+        .terminal-content .white {
+            color: white;
+        }
+
+        /* =========================================================
+           FEATURES
+        ========================================================= */
+
+        .features-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 1px;
+
+            background: #222;
+
+            border: 1px solid #222;
+        }
+
+        .feature {
+            background: #090909;
+
+            padding: 40px;
+
+            min-height: 240px;
+
+            position: relative;
+
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            background: #101010;
+            transform: translateY(-5px);
+        }
+
+        .feature-number {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 13px;
+
+            color: #555;
+
+            letter-spacing: 2px;
+        }
+
+        .feature-icon {
+            margin-top: 35px;
+
+            font-size: 28px;
+
+            color: #e10600;
+        }
+
+        .feature h3 {
+            margin-top: 18px;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 27px;
+
+            text-transform: uppercase;
+        }
+
+        .feature p {
+            margin-top: 10px;
+
+            color: #777;
+
+            line-height: 1.6;
+
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           NEWS
+        ========================================================= */
+
+        .news-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .news-card {
+            border: 1px solid #202020;
+
+            background: #0b0b0b;
+
+            transition: 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-7px);
+
+            border-color: #3b3b3b;
+        }
+
+        .news-image {
+            height: 210px;
+
+            background-size: cover;
+            background-position: center;
+
+            filter: grayscale(30%);
+        }
+
+        .news-content {
+            padding: 25px;
+        }
+
+        .news-date {
+            color: #e10600;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .news-card h3 {
+            margin-top: 12px;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 25px;
+
+            text-transform: uppercase;
+        }
+
+        .news-card p {
+            margin-top: 10px;
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           DOWNLOAD
+        ========================================================= */
+
+        .download {
+            position: relative;
+
+            border-top: 1px solid #191919;
+            border-bottom: 1px solid #191919;
+
+            text-align: center;
+
+            overflow: hidden;
+        }
+
+        .download::before {
+            content: "";
+
+            position: absolute;
+
+            width: 600px;
+            height: 600px;
+
+            border-radius: 50%;
+
+            background: rgba(225,6,0,0.08);
+
+            filter: blur(100px);
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+        }
+
+        .download > * {
+            position: relative;
+        }
+
+        .download h2 {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(55px, 8vw, 100px);
+
+            text-transform: uppercase;
+
+            line-height: 0.9;
+        }
+
+        .download p {
+            max-width: 550px;
+
+            margin: 25px auto;
+
+            color: #888;
+
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           FAQ
+        ========================================================= */
+
+        .faq {
+            max-width: 850px;
+
+            margin: auto;
+        }
+
+        .faq-item {
+            border-top: 1px solid #222;
+        }
+
+        .faq-item:last-child {
+            border-bottom: 1px solid #222;
+        }
+
+        .faq-question {
+            width: 100%;
+
+            padding: 25px 0;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: transparent;
+
+            border: none;
+
+            color: white;
+
+            cursor: pointer;
+
+            text-align: left;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 22px;
+
+            text-transform: uppercase;
+        }
+
+        .faq-question span {
+            color: #e10600;
+        }
+
+        .faq-answer {
+            max-height: 0;
+
+            overflow: hidden;
+
+            color: #777;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+
+            transition: max-height 0.35s ease;
+        }
+
+        .faq-answer p {
+            padding-bottom: 25px;
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 60px 8% 30px;
+
+            border-top: 1px solid #181818;
+
+            background: #050505;
+        }
+
+        .footer-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            padding-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 35px;
+
+            font-weight: 800;
+
+            letter-spacing: 5px;
+        }
+
+        .footer-logo span {
+            color: #e10600;
+        }
+
+        .socials {
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .social {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #252525;
+
+            color: #888;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition: 0.25s;
+        }
+
+        .social:hover {
+            color: white;
+
+            border-color: #e10600;
+
+            background: rgba(225,6,0,0.1);
+        }
+
+        .footer-bottom {
+            padding-top: 25px;
+
+            border-top: 1px solid #181818;
+
+            display: flex;
+            justify-content: space-between;
+
+            color: #555;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+        }
+
+        /* =========================================================
+           REVEAL ANIMATION
+        ========================================================= */
+
+        .reveal {
+            opacity: 0;
+
+            transform: translateY(35px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+
+            transform: translateY(0);
+        }
+
+
+        /* =========================================================
+           SEASON 6 — HALLOWEEN
+        ========================================================= */
+
+        .season6 {
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(255, 120, 0, 0.12);
+            border-bottom: 1px solid rgba(255, 120, 0, 0.12);
+            background:
+                radial-gradient(circle at 85% 20%, rgba(255, 91, 0, 0.08), transparent 32%),
+                radial-gradient(circle at 15% 80%, rgba(255, 140, 0, 0.045), transparent 30%);
+        }
+
+        .season6::before {
+            content: "HALLOWEEN";
+            position: absolute;
+            top: 55px;
+            right: -30px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(90px, 15vw, 220px);
+            font-weight: 800;
+            letter-spacing: -5px;
+            color: rgba(255, 102, 0, 0.035);
+            pointer-events: none;
+        }
+
+        .season6 .section-label {
+            color: #ff7200;
+        }
+
+        .season6 .section-title span {
+            color: #ff7200;
+        }
+
+        .season6-unlock {
+            position: relative;
+            padding: 42px;
+            border: 1px solid rgba(255, 114, 0, 0.35);
+            background:
+                linear-gradient(135deg, rgba(255, 114, 0, 0.08), rgba(0,0,0,0.18)),
+                #0a0a0a;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+        }
+
+        .season6-unlock-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 114, 0, 0.45);
+            color: #ff7200;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .season6-unlock h3 {
+            margin-top: 18px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 36px;
+            text-transform: uppercase;
+        }
+
+        .season6-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .season6-grid div {
+            padding: 16px;
+            border: 1px solid #242424;
+            background: rgba(255,255,255,0.025);
+            color: #c7c7c7;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .season6-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            margin-top: 30px;
+            background: #242424;
+            border: 1px solid #242424;
+        }
+
+        .season6-card {
+            min-height: 250px;
+            padding: 36px;
+            background: #090909;
+            transition: 0.3s;
+        }
+
+        .season6-card:hover {
+            background: #101010;
+            transform: translateY(-5px);
+        }
+
+        .season6-card-number {
+            color: #555;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        .season6-card-icon {
+            margin-top: 28px;
+            font-size: 27px;
+        }
+
+        .season6-card h3 {
+            margin-top: 15px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 27px;
+            text-transform: uppercase;
+        }
+
+        .season6-card p {
+            margin-top: 9px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .season6-maps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 20px;
+        }
+
+        .season6-maps span {
+            padding: 6px 9px;
+            border: 1px solid rgba(255, 114, 0, 0.3);
+            color: #ff7200;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+
+        @media (max-width: 900px) {
+            .season6-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .season6-features {
+                grid-template-columns: 1fr;
+            }
+
+
+            .nav-links,
+            .nav-button {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero {
+                padding-left: 6%;
+                padding-right: 6%;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                display: block;
+            }
+
+            .section-description {
+                margin-top: 20px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+            .season6-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .season6-unlock,
+            .season6-card {
+                padding: 28px;
+            }
+
+
+            section {
+                padding: 80px 6%;
+            }
+
+            .hero h1 {
+                font-size: 85px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .language-switcher {
+                margin-left: 0;
+            }
+
+            .footer-top,
+            .footer-bottom {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+    <div class="glow"></div>
+    <div class="noise"></div>
+
+    <!-- =========================================================
+         NAVIGATION
+    ========================================================== -->
+
+    <nav id="navbar">
+
+        <a href="#" class="logo">
+            JUP<span>9</span>IW
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#news">News</a></li>
+            <li><a href="#season6">Season 6</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#download">Download</a></li>
+        </ul>
+
+        <!-- Replace with your Discord invite -->
+
+        <a href="https://discord.gg/9p2cH2Mtw" target="_blank" class="nav-button">
+            Discord
+        </a>
+
+        <div class="language-switcher" aria-label="Language">
+            <button type="button" data-lang="fr">FR</button>
+            <button type="button" data-lang="en">EN</button>
+        </div>
+
+        <div class="mobile-menu" onclick="toggleMenu()">
+            ☰
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <header class="hero">
+
+        <div class="hero-image"></div>
+
+        <div class="hero-content reveal">
+
+            <div class="status">
+                <div class="status-dot"></div>
+                Project in development
+            </div>
+
+            <h1>
+                JUP<span>9</span>IW
+            </h1>
+
+            <p class="hero-subtitle">
+                A community-driven project dedicated to bringing back
+                the MWIII experience through preservation, research
+                and custom development.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#download" class="btn btn-primary">
+                    Get JUP9IW
+                </a>
+
+                <a href="#about" class="btn btn-secondary">
+                    Explore Project
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            Scroll to explore
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         ABOUT
+    ========================================================== -->
+
+    <section id="about">
+
+        <div class="section-header reveal">
+
+            <div>
+                <div class="section-label">
+                    01 / The Project
+                </div>
+
+                <h2 class="section-title">
+                    Built for<br>the community.
+                </h2>
+            </div>
+
+            <p class="section-description">
+                JUP9IW is a personal/community development project
+                focused on experimentation, preservation and
+                understanding of the MWIII-era experience.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-text reveal">
+
+                <p>
+                    <strong>JUP9IW</strong> is being developed as a
+                    community project for people interested in
+                    Call of Duty, game preservation and custom
+                    development.
+                </p>
+
+                <br>
+
+                <p>
+                    The goal is to create a modern and organized
+                    platform where project updates, development
+                    information and community resources can be
+                    shared in one place.
+                </p>
+
+                <br>
+
+                <p>
+                    Development is an ongoing process. Features,
+                    compatibility and project information may change
+                    as the project evolves.
+                </p>
+
+            </div>
+
+
+            <div class="terminal reveal">
+
+                <div class="terminal-bar">
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                </div>
+
+                <div class="terminal-content">
+
+                    <div>
+                        <span class="red">$</span>
+                        initializing jup9iw...
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        project =
+                        <span class="white">"JUP9IW"</span>
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        target =
+                        <span class="white">"MWIII"</span>
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        status =
+                        <span class="white">"DEVELOPMENT"</span>
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <span class="red">></span>
+                        system ready.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FEATURES
+    ========================================================== -->
+
+    <section id="features">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    02 / Features
+                </div>
+
+                <h2 class="section-title">
+                    What's<br>inside.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+                The project is continuously evolving. Here's a
+                glimpse at the areas JUP9IW focuses on.
+            </p>
+
+        </div>
+
+
+        <div class="features-grid">
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    001
+                </div>
+
+                <div class="feature-icon">
+                    ◈
+                </div>
+
+                <h3>
+                    Preservation
+                </h3>
+
+                <p>
+                    Research and preservation of the MWIII-era
+                    experience and its technology.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    002
+                </div>
+
+                <div class="feature-icon">
+                    ⬡
+                </div>
+
+                <h3>
+                    Custom Development
+                </h3>
+
+                <p>
+                    Experimental systems and tools developed
+                    specifically for the project.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    003
+                </div>
+
+                <div class="feature-icon">
+                    ◎
+                </div>
+
+                <h3>
+                    Community
+                </h3>
+
+                <p>
+                    A place for developers, players and enthusiasts
+                    to follow the project's progress.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    004
+                </div>
+
+                <div class="feature-icon">
+                    ⌁
+                </div>
+
+                <h3>
+                    Research
+                </h3>
+
+                <p>
+                    Technical experimentation and documentation
+                    surrounding the project.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    005
+                </div>
+
+                <div class="feature-icon">
+                    ◫
+                </div>
+
+                <h3>
+                    Updates
+                </h3>
+
+                <p>
+                    Follow development progress and discover
+                    new project milestones.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    006
+                </div>
+
+                <div class="feature-icon">
+                    +
+                </div>
+
+                <h3>
+                    More Coming
+                </h3>
+
+                <p>
+                    JUP9IW is still evolving. More systems and
+                    features will be announced over time.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================================
+         SEASON 6 — HALLOWEEN / UNLOCK ALL
+    ========================================================== -->
+
+    <section id="season6" class="season6">
+
+        <div class="section-header reveal">
+
+            <div>
+                <div class="section-label">
+                    03 / Season 6
+                </div>
+
+                <h2 class="section-title">
+                    Halloween<br><span>Unlock All.</span>
+                </h2>
+            </div>
+
+            <p class="section-description">
+                Saison 6 Halloween : accès complet au contenu,
+                multijoueur local, toutes les maps des Saisons 1 à 6
+                et niveau maximum.
+            </p>
+
+        </div>
+
+        <div class="season6-unlock reveal">
+            <div class="season6-unlock-badge">UNLOCK ALL</div>
+            <h3>Tout le contenu débloqué</h3>
+
+            <div class="season6-grid">
+                <div>🔫 Toutes les armes</div>
+                <div>⚙️ Toutes les variantes</div>
+                <div>🔪 Couteaux & armes de mêlée</div>
+                <div>🎭 Toutes les skins</div>
+                <div>☠️ Toutes les exécutions</div>
+                <div>🎨 Tous les camouflages</div>
+                <div>🏷️ Autocollants & personnalisation</div>
+                <div>🏆 Niveau maximum</div>
+            </div>
+        </div>
+
+        <div class="season6-features">
+
+            <div class="season6-card reveal">
+                <div class="season6-card-number">001</div>
+                <div class="season6-card-icon">🎮</div>
+                <h3>Multijoueur local</h3>
+                <p>
+                    Le multijoueur local est inclus dans la Saison 6
+                    avec l'accès au contenu débloqué.
+                </p>
+            </div>
+
+            <div class="season6-card reveal">
+                <div class="season6-card-number">002</div>
+                <div class="season6-card-icon">🗺️</div>
+                <h3>Toutes les maps</h3>
+                <p>
+                    Les maps des Saisons 1, 2, 3, 4, 5 et 6 sont
+                    incluses.
+                </p>
+
+                <div class="season6-maps">
+                    <span>S1</span>
+                    <span>S2</span>
+                    <span>S3</span>
+                    <span>S4</span>
+                    <span>S5</span>
+                    <span>S6</span>
+                </div>
+            </div>
+
+            <div class="season6-card reveal">
+                <div class="season6-card-number">003</div>
+                <div class="season6-card-icon">🎃</div>
+                <h3>Ambiance Halloween</h3>
+                <p>
+                    Une identité visuelle Halloween dédiée à la
+                    Saison 6, tout en conservant le design original
+                    du site.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         NEWS
+    ========================================================== -->
+
+    <section id="news">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    03 / Intelligence
+                </div>
+
+                <h2 class="section-title">
+                    Latest<br>updates.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+                Development updates and announcements from the
+                JUP9IW project.
+            </p>
+
+        </div>
+
+
+        <div class="news-grid">
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news1.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        27.09.2026
+                    </div>
+
+                    <h3>
+                        JUP9IW is coming
+                    </h3>
+
+                    <p>
+                        Development continues behind the scenes.
+                        More information will be released soon.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news2.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        DEVELOPMENT
+                    </div>
+
+                    <h3>
+                        Project infrastructure
+                    </h3>
+
+                    <p>
+                        Work is currently focused on the core
+                        infrastructure and development environment.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news3.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        COMMUNITY
+                    </div>
+
+                    <h3>
+                        Join the community
+                    </h3>
+
+                    <p>
+                        Follow the project and stay informed through
+                        the official community channels.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         DOWNLOAD
+    ========================================================== -->
+
+    <section id="download" class="download">
+
+        <div class="section-label reveal">
+            04 / Access
+        </div>
+
+        <h2 class="reveal">
+            Ready to<br>
+            <span style="color:#e10600;">
+                deploy?
+            </span>
+        </h2>
+
+        <p class="reveal">
+            Follow the project, join the community and keep an eye
+            on future releases and development announcements.
+        </p>
+
+        <div class="hero-buttons reveal"
+             style="justify-content:center;">
+
+            <!-- Replace with your real GitHub release/download URL -->
+
+            <a
+                href="https://github.com/"
+                target="_blank"
+                class="btn btn-primary">
+                GitHub
+            </a>
+
+            <!-- Replace with your Discord invite -->
+
+            <a
+                href="https://discord.gg/9p2cH2Mtw"
+                target="_blank"
+                class="btn btn-secondary">
+                Discord
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FAQ
+    ========================================================== -->
+
+    <section id="faq">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    05 / Information
+                </div>
+
+                <h2 class="section-title">
+                    Frequently<br>asked.
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="faq">
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    What is JUP9IW?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        JUP9IW is a community-driven project focused
+                        on research, preservation and custom development
+                        related to the MWIII-era Call of Duty experience.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Is the project finished?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        No. JUP9IW is currently under development.
+                        Features and project information may change
+                        as development progresses.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Where can I follow development?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        Follow the official GitHub repository and
+                        community Discord for announcements and
+                        development updates.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Can I contribute?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        Contribution opportunities can be announced
+                        through the project's official channels as
+                        the project develops.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
+
+        <div class="footer-top">
+
+            <div class="footer-logo">
+                JUP<span>9</span>IW
+            </div>
+
+            <div class="socials">
+
+                <a
+                    href="https://github.com/"
+                    target="_blank"
+                    class="social">
+                    GH
+                </a>
+
+                <a
+                    href="https://discord.gg/9p2cH2Mtw"
+                    target="_blank"
+                    class="social">
+                    DC
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 JUP9IW. All rights reserved.
+            </span>
+
+            <span>
+                COMMUNITY PROJECT
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        const navbar = document.getElementById("navbar");
+
+        window.addEventListener("scroll", () => {
+
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+
+        });
+
+
+        /* =====================================================
+           REVEAL ANIMATION
+        ===================================================== */
+
+        const revealElements =
+            document.querySelectorAll(".reveal");
+
+        const revealObserver =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("visible");
+
+                            revealObserver.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+
+        /* =====================================================
+           FAQ
+        ===================================================== */
+
+        const questions =
+            document.querySelectorAll(".faq-question");
+
+        questions.forEach(question => {
+
+            question.addEventListener("click", () => {
+
+                const answer =
+                    question.nextElementSibling;
+
+                const symbol =
+                    question.querySelector("span");
+
+
+                document
+                    .querySelectorAll(".faq-answer")
+                    .forEach(other => {
+
+                        if (other !== answer) {
+                            other.style.maxHeight = null;
+                        }
+
+                    });
+
+
+                document
+                    .querySelectorAll(".faq-question span")
+                    .forEach(otherSymbol => {
+
+                        if (otherSymbol !== symbol) {
+                            otherSymbol.textContent = "+";
+                        }
+
+                    });
+
+
+                if (answer.style.maxHeight) {
+
+                    answer.style.maxHeight = null;
+
+                    symbol.textContent = "+";
+
+                } else {
+
+                    answer.style.maxHeight =
+                        answer.scrollHeight + "px";
+
+                    symbol.textContent = "−";
+
+                }
+
+            });
+
+        });
+
+
+        /* =====================================================
+           LANGUAGE SWITCHER
+        ===================================================== */
+
+        const translations = {
+            fr: {
+                "nav.about": "À propos",
+                "nav.features": "Fonctionnalités",
+                "nav.news": "Actualités",
+                "nav.season6": "Saison 6",
+                "nav.download": "Téléchargement",
+                "nav.faq": "FAQ",
+                "hero.status": "Projet en développement",
+                "hero.subtitle": "Un projet communautaire dédié à faire revivre l'expérience MWIII grâce à la préservation, la recherche et au développement personnalisé.",
+                "hero.get": "Obtenir JUP9IW",
+                "hero.explore": "Découvrir le projet",
+                "hero.scroll": "Faites défiler pour explorer",
+
+                "about.label": "01 / Le projet",
+                "about.title": "Créé pour<br>la communauté.",
+                "about.description": "JUP9IW est un projet personnel et communautaire axé sur l'expérimentation, la préservation et la compréhension de l'expérience de l'ère MWIII.",
+                "about.p1": "<strong>JUP9IW</strong> est développé comme un projet communautaire pour les personnes intéressées par Call of Duty, la préservation des jeux et le développement personnalisé.",
+                "about.p2": "L'objectif est de créer une plateforme moderne et organisée où les actualités du projet, les informations de développement et les ressources communautaires peuvent être regroupées au même endroit.",
+                "about.p3": "Le développement est toujours en cours. Les fonctionnalités, la compatibilité et les informations du projet peuvent évoluer au fil de son développement.",
+                "terminal.init": "initialisation de jup9iw...",
+                "terminal.project": "projet =",
+                "terminal.target": "cible =",
+                "terminal.status": "statut =",
+                "terminal.ready": "système prêt.",
+
+                "features.label": "02 / Fonctionnalités",
+                "features.title": "Ce qu'il<br>contient.",
+                "features.description": "Le projet évolue constamment. Voici un aperçu des domaines sur lesquels JUP9IW se concentre.",
+                "feature.1.title": "Préservation",
+                "feature.1.text": "Recherche et préservation de l'expérience de l'ère MWIII et de ses technologies.",
+                "feature.2.title": "Développement personnalisé",
+                "feature.2.text": "Systèmes expérimentaux et outils développés spécifiquement pour le projet.",
+                "feature.3.title": "Communauté",
+                "feature.3.text": "Un espace pour les développeurs, joueurs et passionnés afin de suivre l'avancement du projet.",
+                "feature.4.title": "Recherche",
+                "feature.4.text": "Expérimentation technique et documentation autour du projet.",
+                "feature.5.title": "Actualités",
+                "feature.5.text": "Suivez l'avancement du développement et découvrez les nouvelles étapes du projet.",
+                "feature.6.title": "Plus à venir",
+                "feature.6.text": "JUP9IW continue d'évoluer. De nouveaux systèmes et fonctionnalités seront annoncés avec le temps.",
+
+                "news.label": "03 / Actualités",
+                "news.title": "Dernières<br>actualités.",
+                "news.description": "Actualités du développement et annonces du projet JUP9IW.",
+                "news.1.title": "JUP9IW arrive",
+                "news.1.text": "Le développement continue en coulisses. Plus d'informations seront publiées prochainement.",
+                "news.2.tag": "DÉVELOPPEMENT",
+                "news.2.title": "Infrastructure du projet",
+                "news.2.text": "Le travail porte actuellement sur l'infrastructure principale et l'environnement de développement.",
+                "news.3.tag": "COMMUNAUTÉ",
+                "news.3.title": "Rejoignez la communauté",
+                "news.3.text": "Suivez le projet et restez informé grâce aux canaux officiels de la communauté.",
+
+                "download.label": "04 / Accès",
+                "download.title": "Prêt à<br><span style=\"color:#e10600;\">déployer ?</span>",
+                "download.text": "Suivez le projet, rejoignez la communauté et gardez un œil sur les prochaines sorties et annonces de développement.",
+
+                "faq.label": "05 / Informations",
+                "faq.title": "Questions<br>fréquentes.",
+                "faq.1.q": "Qu'est-ce que JUP9IW ?",
+                "faq.1.a": "JUP9IW est un projet communautaire axé sur la recherche, la préservation et le développement personnalisé autour de l'expérience Call of Duty de l'ère MWIII.",
+                "faq.2.q": "Le projet est-il terminé ?",
+                "faq.2.a": "Non. JUP9IW est actuellement en développement. Les fonctionnalités et les informations du projet peuvent évoluer au fur et à mesure du développement.",
+                "faq.3.q": "Où suivre le développement ?",
+                "faq.3.a": "Suivez le dépôt GitHub officiel et le Discord communautaire pour les annonces et les mises à jour du développement.",
+                "faq.4.q": "Puis-je contribuer ?",
+                "faq.4.a": "Les possibilités de contribution peuvent être annoncées sur les canaux officiels du projet au fur et à mesure de son développement.",
+
+                "footer.rights": "© 2026 JUP9IW. Tous droits réservés.",
+                "footer.community": "PROJET COMMUNAUTAIRE"
+            },
+
+            en: {
+                "nav.about": "About",
+                "nav.features": "Features",
+                "nav.news": "News",
+                "nav.season6": "Season 6",
+                "nav.download": "Download",
+                "nav.faq": "FAQ",
+                "hero.status": "Project in development",
+                "hero.subtitle": "A community-driven project dedicated to bringing back the MWIII experience through preservation, research and custom development.",
+                "hero.get": "Get JUP9IW",
+                "hero.explore": "Explore Project",
+                "hero.scroll": "Scroll to explore",
+
+                "about.label": "01 / The Project",
+                "about.title": "Built for<br>the community.",
+                "about.description": "JUP9IW is a personal and community development project focused on experimentation, preservation and understanding of the MWIII-era experience.",
+                "about.p1": "<strong>JUP9IW</strong> is being developed as a community project for people interested in Call of Duty, game preservation and custom development.",
+                "about.p2": "The goal is to create a modern and organized platform where project updates, development information and community resources can be shared in one place.",
+                "about.p3": "Development is an ongoing process. Features, compatibility and project information may change as the project evolves.",
+                "terminal.init": "initializing jup9iw...",
+                "terminal.project": "project =",
+                "terminal.target": "target =",
+                "terminal.status": "status =",
+                "terminal.ready": "system ready.",
+
+                "features.label": "02 / Features",
+                "features.title": "What's<br>inside.",
+                "features.description": "The project is continuously evolving. Here's a glimpse at the areas JUP9IW focuses on.",
+                "feature.1.title": "Preservation",
+                "feature.1.text": "Research and preservation of the MWIII-era experience and its technology.",
+                "feature.2.title": "Custom Development",
+                "feature.2.text": "Experimental systems and tools developed specifically for the project.",
+                "feature.3.title": "Community",
+                "feature.3.text": "A place for developers, players and enthusiasts to follow the project's progress.",
+                "feature.4.title": "Research",
+                "feature.4.text": "Technical experimentation and documentation surrounding the project.",
+                "feature.5.title": "Updates",
+                "feature.5.text": "Follow development progress and discover new project milestones.",
+                "feature.6.title": "More Coming",
+                "feature.6.text": "JUP9IW is still evolving. More systems and features will be announced over time.",
+
+                "news.label": "03 / Intelligence",
+                "news.title": "Latest<br>updates.",
+                "news.description": "Development updates and announcements from the JUP9IW project.",
+                "news.1.title": "JUP9IW is coming",
+                "news.1.text": "Development continues behind the scenes. More information will be released soon.",
+                "news.2.tag": "DEVELOPMENT",
+                "news.2.title": "Project infrastructure",
+                "news.2.text": "Work is currently focused on the core infrastructure and development environment.",
+                "news.3.tag": "COMMUNITY",
+                "news.3.title": "Join the community",
+                "news.3.text": "Follow the project and stay informed through the official community channels.",
+
+                "download.label": "04 / Access",
+                "download.title": "Ready to<br><span style=\"color:#e10600;\">deploy?</span>",
+                "download.text": "Follow the project, join the community and keep an eye on future releases and development announcements.",
+
+                "faq.label": "05 / Information",
+                "faq.title": "Frequently<br>asked.",
+                "faq.1.q": "What is JUP9IW?",
+                "faq.1.a": "JUP9IW is a community-driven project focused on research, preservation and custom development related to the MWIII-era Call of Duty experience.",
+                "faq.2.q": "Is the project finished?",
+                "faq.2.a": "No. JUP9IW is currently under development. Features and project information may change as development progresses.",
+                "faq.3.q": "Where can I follow development?",
+                "faq.3.a": "Follow the official GitHub repository and community Discord for announcements and development updates.",
+                "faq.4.q": "Can I contribute?",
+                "faq.4.a": "Contribution opportunities can be announced through the project's official channels as the project develops.",
+
+                "footer.rights": "© 2026 JUP9IW. All rights reserved.",
+                "footer.community": "COMMUNITY PROJECT"
+            }
+        };
+
+        const languageElements = [
+            ["nav.about", ".nav-links li:nth-child(1) a"],
+            ["nav.features", ".nav-links li:nth-child(2) a"],
+            ["nav.news", ".nav-links li:nth-child(3) a"],
+            ["nav.season6", ".nav-links li:nth-child(4) a"],
+            ["nav.download", ".nav-links li:nth-child(5) a"],
+            ["nav.faq", ".nav-links li:nth-child(5) a"],
+            ["hero.status", ".status"],
+            ["hero.subtitle", ".hero-subtitle"],
+            ["hero.get", ".hero-buttons .btn-primary"],
+            ["hero.explore", ".hero-buttons .btn-secondary"],
+            ["hero.scroll", ".scroll-indicator"],
+            ["about.label", "#about .section-label"],
+            ["about.title", "#about .section-title"],
+            ["about.description", "#about .section-description"],
+            ["about.p1", "#about .about-text p:nth-of-type(1)"],
+            ["about.p2", "#about .about-text p:nth-of-type(2)"],
+            ["about.p3", "#about .about-text p:nth-of-type(3)"],
+            ["terminal.init", ".terminal-content > div:nth-child(1)"],
+            ["terminal.project", ".terminal-content > div:nth-child(2)"],
+            ["terminal.target", ".terminal-content > div:nth-child(3)"],
+            ["terminal.status", ".terminal-content > div:nth-child(4)"],
+            ["terminal.ready", ".terminal-content > div:nth-child(6)"],
+            ["features.label", "#features .section-label"],
+            ["features.title", "#features .section-title"],
+            ["features.description", "#features .section-description"],
+            ["feature.1.title", ".feature:nth-child(1) h3"],
+            ["feature.1.text", ".feature:nth-child(1) p"],
+            ["feature.2.title", ".feature:nth-child(2) h3"],
+            ["feature.2.text", ".feature:nth-child(2) p"],
+            ["feature.3.title", ".feature:nth-child(3) h3"],
+            ["feature.3.text", ".feature:nth-child(3) p"],
+            ["feature.4.title", ".feature:nth-child(4) h3"],
+            ["feature.4.text", ".feature:nth-child(4) p"],
+            ["feature.5.title", ".feature:nth-child(5) h3"],
+            ["feature.5.text", ".feature:nth-child(5) p"],
+            ["feature.6.title", ".feature:nth-child(6) h3"],
+            ["feature.6.text", ".feature:nth-child(6) p"],
+            ["news.label", "#news .section-label"],
+            ["news.title", "#news .section-title"],
+            ["news.description", "#news .section-description"],
+            ["news.1.title", ".news-card:nth-child(1) h3"],
+            ["news.1.text", ".news-card:nth-child(1) p"],
+            ["news.2.tag", ".news-card:nth-child(2) .news-date"],
+            ["news.2.title", ".news-card:nth-child(2) h3"],
+            ["news.2.text", ".news-card:nth-child(2) p"],
+            ["news.3.tag", ".news-card:nth-child(3) .news-date"],
+            ["news.3.title", ".news-card:nth-child(3) h3"],
+            ["news.3.text", ".news-card:nth-child(3) p"],
+            ["download.label", "#download .section-label"],
+            ["download.title", "#download h2"],
+            ["download.text", "#download > p"],
+            ["faq.label", "#faq .section-label"],
+            ["faq.title", "#faq .section-title"],
+            ["faq.1.q", ".faq-item:nth-child(1) .faq-question"],
+            ["faq.1.a", ".faq-item:nth-child(1) .faq-answer p"],
+            ["faq.2.q", ".faq-item:nth-child(2) .faq-question"],
+            ["faq.2.a", ".faq-item:nth-child(2) .faq-answer p"],
+            ["faq.3.q", ".faq-item:nth-child(3) .faq-question"],
+            ["faq.3.a", ".faq-item:nth-child(3) .faq-answer p"],
+            ["faq.4.q", ".faq-item:nth-child(4) .faq-question"],
+            ["faq.4.a", ".faq-item:nth-child(4) .faq-answer p"],
+            ["footer.rights", ".footer-bottom span:nth-child(1)"],
+            ["footer.community", ".footer-bottom span:nth-child(2)"]
+        ];
+
+        function setLanguage(lang) {
+            const dictionary = translations[lang];
+
+            languageElements.forEach(([key, selector]) => {
+                const element = document.querySelector(selector);
+                if (element && dictionary[key] !== undefined) {
+                    element.innerHTML = dictionary[key];
+                }
+            });
+
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll(".language-switcher button").forEach(button => {
+                button.classList.toggle("active", button.dataset.lang === lang);
+            });
+
+            localStorage.setItem("jup9iw-language", lang);
+        }
+
+        document.querySelectorAll(".language-switcher button").forEach(button => {
+            button.addEventListener("click", () => {
+                setLanguage(button.dataset.lang);
+            });
+        });
+
+        const savedLanguage = localStorage.getItem("jup9iw-language");
+        const browserLanguage = navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
+        setLanguage(savedLanguage || browserLanguage);
+
+
+
+        /* =====================================================
+           MOBILE MENU
+        ===================================================== */
+
+        function toggleMenu() {
+
+            const links =
+                document.querySelector(".nav-links");
+
+            if (links.style.display === "flex") {
+
+                links.style.display = "none";
+
+            } else {
+
+                links.style.display = "flex";
+
+                links.style.position = "absolute";
+                links.style.top = "65px";
+                links.style.left = "0";
+                links.style.width = "100%";
+
+                links.style.flexDirection = "column";
+
+                links.style.padding = "25px";
+
+                links.style.background =
+                    "rgba(5,5,5,.97)";
+
+                links.style.borderBottom =
+                    "1px solid #222";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
+
+```
