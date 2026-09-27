@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JUPIW - Warzone III Mod Project</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#0b0b0b;
+    color:white;
+}
+
+.hero{
+    height:100vh;
+    background:url("background.jpg") center center/cover no-repeat;
+    position:relative;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.55);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+}
+
+.logo{
+    font-size:7rem;
+    font-weight:900;
+    letter-spacing:5px;
+}
+
+.logo span{
+    color:#ff2020;
+}
+
+.subtitle{
+    margin-top:15px;
+    font-size:1.4rem;
+    color:#ddd;
+}
+
+.buttons{
+    margin-top:40px;
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    text-decoration:none;
+    color:white;
+    border:2px solid #ff2020;
+    padding:15px 35px;
+    border-radius:8px;
+    transition:.3s;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#ff2020;
+}
+
+section{
+    padding:100px 10%;
+}
+
+h2{
+    text-align:center;
+    font-size:3rem;
+    margin-bottom:50px;
+    color:#ff2020;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#151515;
+    padding:30px;
+    border-radius:15px;
+    border:1px solid #222;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.gallery img{
+    width:100%;
+    border-radius:12px;
+}
+
+.download-box{
+    text-align:center;
+}
+
+.download-btn{
+    display:inline-block;
+    background:#ff2020;
+    color:white;
+    padding:20px 45px;
+    text-decoration:none;
+    border-radius:10px;
+    font-size:1.2rem;
+    margin-top:20px;
+}
+
+footer{
+    text-align:center;
+    padding:40px;
+    color:#999;
+    border-top:1px solid #222;
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+<div class="hero-content">
+
+<h1 class="logo">JUP<span>IW</span></h1>
+
+<p class="subtitle">
+WARZONE III MOD PROJECT
+</p>
+
+<div class="buttons">
+#downloadDOWNLOAD</a>
+#DISCORD</a>
+</div>
+
+</div>
+</section>
+
+<section>
+
+<h2>FEATURES</h2>
+
+<div class="features">
+
+<div class="card">
+<h3>⚡ Optimisations</h3>
+<p>Amélioration des performances et de la fluidité.</p>
+</div>
+
+<div class="card">
+<h3>🎮 Expérience unique</h3>
+<p>Fonctionnalités personnalisées pour votre projet.</p>
+</div>
+
+<div class="card">
+<h3>🚀 Mises à jour</h3>
+<p>Développement actif et améliorations constantes.</p>
+</div>
+
+<div class="card">
+<h3>🛠 Projet communautaire</h3>
+<p>Construit par des passionnés pour des passionnés.</p>
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<h2>GALLERY</h2>
+
+<div class="gallery">
+
+background.jpg
+background.jpg
+background.jpg
+
+</div>
+
+</section>
+
+<section id="download">
+
+<h2>DOWNLOAD</h2>
+
+<div class="download-box">
+
+<p>
+Téléchargez la dernière version de JUPIW.
+</p>
+
+#
+DOWNLOAD JUPIW
+</a>
+
+</div>
+
+</section>
+
+<footer>
+
+© 2026 JUPIW • Warzone III Mod Project
+
+</footer>
+
+</body>
+</html>
