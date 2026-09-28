@@ -1,0 +1,4095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JUP9IW — Warzone 3 Mod Client</title>
+    <meta name="description" content="JUP9IW is a client containing an unofficial Warzone 3 mod currently in development.">
+    <meta name="theme-color" content="#080808">
+
+    <style>
+        @font-face {
+            font-family: "Rajdhani";
+            src: url("assets/fonts/HitmarkerCondensed-Regular.ttf") format("truetype");
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Rajdhani";
+            src: url("assets/fonts/HitmarkerCondensed-Bold.ttf") format("truetype");
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+        }
+
+        /* =========================================================
+           JUP9IW — GLOBAL
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #070707;
+            color: #ffffff;
+            font-family: "Rajdhani", sans-serif;
+            overflow-x: hidden;
+        }
+
+        body,
+        body *,
+        body *::before,
+        body *::after {
+            font-family: "Rajdhani", sans-serif !important;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        ::selection {
+            background: #e10600;
+            color: white;
+        }
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -5;
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+            background-size: 70px 70px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 80%
+            );
+        }
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0.035;
+
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+        }
+
+        .glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+
+            background: rgba(225, 6, 0, 0.08);
+            filter: blur(100px);
+
+            top: -250px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            pointer-events: none;
+            z-index: -4;
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 130px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            z-index: 100;
+
+            background: rgba(5,5,5,0.65);
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+
+            transition: 0.3s;
+        }
+
+        nav.scrolled {
+            height: 98px;
+            background: rgba(5,5,5,0.92);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 5px;
+        }
+
+        .logo-image {
+            width: 0;
+            height: 120px;
+            object-fit: contain;
+            opacity: 0;
+            transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
+        }
+
+        .logo.has-image .logo-image {
+            width: 120px;
+            opacity: 1;
+        }
+
+        nav.scrolled .logo.has-image .logo-image {
+            width: 88px;
+            height: 88px;
+        }
+
+        .logo.has-image .logo-wordmark {
+            display: none;
+        }
+
+        .logo span {
+            color: #e10600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            position: relative;
+
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            color: #aaa;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a::after {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+
+            width: 0;
+            height: 2px;
+
+            background: #e10600;
+
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-button {
+            padding: 11px 20px;
+
+            border: 1px solid rgba(225,6,0,0.5);
+            background: rgba(225,6,0,0.08);
+
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            transition: 0.25s;
+        }
+
+        .nav-button:hover {
+            background: #e10600;
+            border-color: #e10600;
+            transform: translateY(-2px);
+        }
+
+        /* =====================================================
+           LANGUAGE SWITCHER
+        ===================================================== */
+
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 14px;
+            padding: 4px;
+            border: 1px solid #252525;
+            border-radius: 8px;
+            background: rgba(255,255,255,.03);
+        }
+
+        .language-switcher button {
+            border: 0;
+            background: transparent;
+            color: #777;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            padding: 7px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .language-switcher button:hover {
+            color: #fff;
+        }
+
+        .language-switcher button.active {
+            color: #fff;
+            background: #e10600;
+        }
+
+
+        .mobile-menu {
+            display: none;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .hero {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+
+            padding: 120px 8% 80px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,0,0,0.98) 0%,
+                    rgba(0,0,0,0.72) 45%,
+                    rgba(0,0,0,0.2) 100%
+                );
+
+            z-index: -1;
+        }
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(90deg, rgba(0,0,0,0.9), rgba(0,0,0,0.45), rgba(0,0,0,0.75)),
+                radial-gradient(ellipse at 72% 43%, rgba(180,28,20,0.48), transparent 34%),
+                radial-gradient(ellipse at 63% 58%, rgba(72,126,149,0.22), transparent 40%),
+                linear-gradient(135deg, #161714 0%, #282723 32%, #211b18 55%, #080907 100%),
+                url("assets/hero.jpg") center/cover no-repeat;
+
+            z-index: -2;
+            transform: scale(1.03);
+            animation: hero-drift 22s ease-in-out infinite alternate;
+        }
+
+        .hero-image::before,
+        .hero-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .hero-image::before {
+            opacity: 0.5;
+            background:
+                linear-gradient(105deg, transparent 38%, rgba(225,6,0,0.13) 39%, transparent 40%),
+                linear-gradient(77deg, transparent 61%, rgba(190,196,171,0.08) 61.2%, transparent 61.8%),
+                repeating-linear-gradient(102deg, transparent 0 52px, rgba(255,255,255,0.025) 53px, transparent 54px 84px);
+            mask-image: linear-gradient(90deg, transparent 20%, black 55%, black);
+        }
+
+        .hero-image::after {
+            background: linear-gradient(0deg, rgba(7,9,7,0.96), transparent 36%), linear-gradient(90deg, rgba(5,6,5,0.55), transparent 78%);
+        }
+
+        @keyframes hero-drift {
+            from { transform: scale(1.02) translate3d(-0.5%, 0, 0); }
+            to { transform: scale(1.1) translate3d(0.5%, -0.5%, 0); }
+        }
+
+        .hero-content {
+            animation: hero-entry 0.9s cubic-bezier(.2,.7,.2,1) both;
+        }
+
+        @keyframes hero-entry {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mw-menu {
+            position: relative;
+            display: flex;
+            min-height: 100svh;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            padding: 110px 5% 52px;
+            isolation: isolate;
+            background:
+                radial-gradient(ellipse at 72% 18%, rgba(151,30,24,0.34), transparent 36%),
+                radial-gradient(ellipse at 36% 52%, rgba(53,99,120,0.18), transparent 38%),
+                linear-gradient(112deg, #10110f 0%, #262623 42%, #151512 67%, #090a08 100%);
+        }
+
+        .mw-menu::before,
+        .mw-menu::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .mw-menu::before {
+            opacity: 0.58;
+            background:
+                linear-gradient(90deg, transparent 0 66%, rgba(225,6,0,0.26) 66.2%, transparent 66.6%),
+                linear-gradient(104deg, transparent 0 72%, rgba(205,210,193,0.12) 72.2%, transparent 72.8%),
+                repeating-linear-gradient(100deg, transparent 0 70px, rgba(255,255,255,0.028) 71px, transparent 73px 122px),
+                radial-gradient(ellipse at 75% 31%, rgba(225,6,0,0.22), transparent 19%);
+            mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 95%);
+        }
+
+        .mw-menu::after {
+            background: linear-gradient(180deg, rgba(5,6,5,0.15) 0%, transparent 25%, rgba(5,6,5,0.32) 52%, #080907 100%);
+        }
+
+        .mw-menu-topline,
+        .mw-menu-footer,
+        .mode-grid,
+        .mw-menu-heading {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 1500px);
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .mw-menu-topline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            color: #b6b7af;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .mw-menu-identity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mw-menu-monogram {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            place-items: center;
+            border: 1px solid rgba(88,152,178,0.58);
+            color: #f4f3ed;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+        }
+
+        .mw-menu-identity small,
+        .mw-menu-status small {
+            display: block;
+            margin-bottom: 3px;
+            color: #797d72;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        .mw-menu-identity strong,
+        .mw-menu-status strong {
+            color: #e3e4dc;
+        }
+
+        .mw-menu-status {
+            text-align: right;
+        }
+
+        .mw-menu-status strong::before {
+            content: "";
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            margin: 0 8px 1px 0;
+            border-radius: 50%;
+            background: var(--mw-red);
+            box-shadow: 0 0 12px rgba(225,6,0,0.7);
+        }
+
+        .mw-menu-heading {
+            margin-top: auto;
+            margin-bottom: 22px;
+            padding-top: 80px;
+            animation: menu-heading-in 0.75s 0.12s both;
+        }
+
+        @keyframes menu-heading-in {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mw-menu-heading .ops-kicker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mw-menu-heading .ops-kicker::before {
+            content: "";
+            width: 22px;
+            height: 2px;
+            background: var(--mw-red);
+        }
+
+        .mw-menu-heading h2 {
+            margin-top: 8px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(42px, 7vw, 76px);
+            font-weight: 700;
+            line-height: 0.86;
+            text-transform: uppercase;
+            text-shadow: 0 8px 36px rgba(0,0,0,0.48);
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            animation: tiles-arrive 0.8s 0.2s both;
+        }
+
+        @keyframes tiles-arrive {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mode-tile {
+            position: relative;
+            display: flex;
+            min-width: 0;
+            min-height: clamp(220px, 25vh, 300px);
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            padding: 18px;
+            border: 1px solid rgba(226,229,216,0.18);
+            background: #11130f;
+            isolation: isolate;
+            transition: border-color 0.3s ease, transform 0.4s cubic-bezier(.2,.7,.2,1), box-shadow 0.3s ease;
+        }
+
+        .mode-tile::before,
+        .mode-tile::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .mode-tile::before {
+            opacity: 0.92;
+            transition: transform 0.7s cubic-bezier(.2,.7,.2,1), opacity 0.4s ease;
+        }
+
+        .mode-tile::after {
+            background:
+                linear-gradient(180deg, rgba(5,6,5,0.08), rgba(5,6,5,0.2) 32%, rgba(5,6,5,0.92)),
+                repeating-linear-gradient(112deg, transparent 0 32px, rgba(255,255,255,0.035) 33px, transparent 34px 62px);
+        }
+
+        .mode-tile:hover,
+        .mode-tile:focus-visible {
+            z-index: 2;
+            transform: translateY(-8px) scale(1.015);
+            border-color: rgba(122,194,218,0.9);
+            box-shadow: 0 22px 55px rgba(0,0,0,0.48), 0 0 0 1px rgba(88,152,178,0.42);
+        }
+
+        .mode-tile:hover::before,
+        .mode-tile:focus-visible::before {
+            opacity: 1;
+            transform: scale(1.09);
+        }
+
+        .mode-tile:focus-visible {
+            outline: 2px solid var(--mw-olive);
+            outline-offset: 3px;
+        }
+
+        .mode-tile--hq::before {
+            background: radial-gradient(ellipse at 75% 35%, rgba(225,6,0,0.64), transparent 32%), radial-gradient(ellipse at 60% 48%, rgba(184,187,174,0.3), transparent 39%), linear-gradient(130deg, #282a25, #4c443d 52%, #161714);
+        }
+
+        .mode-tile--mod::before {
+            background: radial-gradient(ellipse at 73% 37%, rgba(180,34,23,0.58), transparent 32%), linear-gradient(82deg, transparent 56%, rgba(88,152,178,0.22) 57%, transparent 67%), linear-gradient(135deg, #171a16, #3e3730 51%, #10120f);
+        }
+
+        .mode-tile--client::before {
+            background: radial-gradient(ellipse at 71% 33%, rgba(74,131,157,0.3), transparent 35%), linear-gradient(140deg, #242721, #343630 47%, #10110f);
+        }
+
+        .mode-tile--intel::before {
+            background: radial-gradient(ellipse at 78% 34%, rgba(225,6,0,0.4), transparent 27%), repeating-linear-gradient(90deg, rgba(88,152,178,0.1) 0 1px, transparent 1px 32px), linear-gradient(130deg, #20221d, #35352f 50%, #10110f);
+        }
+
+        .mode-tile-index,
+        .mode-tile-kicker {
+            color: rgba(239,240,229,0.62);
+            font-family: "Rajdhani", sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .mode-tile-content {
+            position: relative;
+        }
+
+        .mode-tile-mark {
+            display: block;
+            margin-bottom: 6px;
+            color: rgba(246,246,238,0.85);
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(24px, 3.2vw, 43px);
+            font-weight: 800;
+            line-height: 0.9;
+            text-shadow: 0 3px 22px rgba(0,0,0,0.5);
+        }
+
+        .mode-tile h3 {
+            color: #fff;
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(20px, 2.2vw, 28px);
+            font-weight: 700;
+            line-height: 0.95;
+            text-transform: uppercase;
+        }
+
+        .mode-tile p {
+            max-width: 280px;
+            margin-top: 8px;
+            color: rgba(225,226,216,0.76);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .mode-tile-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 17px -18px -18px;
+            padding: 12px 17px;
+            background: rgba(5,7,5,0.58);
+            color: #d1d4c8;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+
+        .mode-tile-action span:last-child {
+            color: var(--mw-olive);
+            font-size: 18px;
+            transition: transform 0.25s ease;
+        }
+
+        .mode-tile:hover .mode-tile-action,
+        .mode-tile:focus-visible .mode-tile-action {
+            background: #5898B2;
+            color: #11130f;
+        }
+
+        .mode-tile:hover .mode-tile-action span:last-child,
+        .mode-tile:focus-visible .mode-tile-action span:last-child {
+            color: #11130f;
+            transform: translateX(4px);
+        }
+
+        .mw-menu-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 22px;
+            color: #777a70;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.7px;
+            text-transform: uppercase;
+        }
+
+        .hero-content {
+            max-width: 850px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.035);
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            color: #bbb;
+
+            margin-bottom: 25px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+
+            background: #35d07f;
+
+            box-shadow: 0 0 12px #35d07f;
+        }
+
+        .hero h1 {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(80px, 13vw, 180px);
+
+            line-height: 0.78;
+
+            font-weight: 700;
+
+            letter-spacing: -5px;
+
+            text-transform: uppercase;
+        }
+
+        .hero h1 span {
+            color: #e10600;
+        }
+
+        .hero-subtitle {
+            margin-top: 30px;
+
+            max-width: 620px;
+
+            color: #aaa;
+
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 15px 27px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #e10600;
+            border-color: #e10600;
+        }
+
+        .btn-primary:hover {
+            background: #ff160f;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(225,6,0,0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 35px;
+            left: 8%;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #666;
+
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 45px;
+            height: 1px;
+            background: #555;
+        }
+
+        /* =========================================================
+           SECTIONS
+        ========================================================= */
+
+        section {
+            padding: 120px 8%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+
+            margin-bottom: 55px;
+        }
+
+        .section-label {
+            color: #e10600;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(45px, 6vw, 80px);
+
+            line-height: 0.9;
+
+            text-transform: uppercase;
+        }
+
+        .section-description {
+            max-width: 430px;
+
+            color: #888;
+
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* =========================================================
+           ABOUT
+        ========================================================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+
+            gap: 60px;
+
+            align-items: center;
+        }
+
+        .about-text {
+            color: #aaa;
+
+            line-height: 1.9;
+
+            font-size: 16px;
+        }
+
+        .about-text strong {
+            color: white;
+        }
+
+        .terminal {
+            background: #0c0c0c;
+
+            border: 1px solid #202020;
+
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        .terminal-bar {
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 0 14px;
+
+            border-bottom: 1px solid #202020;
+        }
+
+        .terminal-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+
+            background: #333;
+        }
+
+        .terminal-content {
+            padding: 25px;
+
+            font-family: monospace;
+            font-size: 13px;
+
+            line-height: 2;
+
+            color: #777;
+        }
+
+        .terminal-content .red {
+            color: #e10600;
+        }
+
+        .terminal-content .white {
+            color: white;
+        }
+
+        /* =========================================================
+           FEATURES
+        ========================================================= */
+
+        .features-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 1px;
+
+            background: #222;
+
+            border: 1px solid #222;
+        }
+
+        .feature {
+            background: #090909;
+
+            padding: 40px;
+
+            min-height: 240px;
+
+            position: relative;
+
+            transition: 0.3s;
+        }
+
+        .feature:hover {
+            background: #101010;
+            transform: translateY(-5px);
+        }
+
+        .feature-number {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 13px;
+
+            color: #555;
+
+            letter-spacing: 2px;
+        }
+
+        .feature-icon {
+            margin-top: 35px;
+
+            font-size: 28px;
+
+            color: #e10600;
+        }
+
+        .feature h3 {
+            margin-top: 18px;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 27px;
+
+            text-transform: uppercase;
+        }
+
+        .feature p {
+            margin-top: 10px;
+
+            color: #777;
+
+            line-height: 1.6;
+
+            font-size: 13px;
+        }
+
+        /* =========================================================
+           NEWS
+        ========================================================= */
+
+        .news-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        .news-card {
+            border: 1px solid #202020;
+
+            background: #0b0b0b;
+
+            overflow: hidden;
+
+            transition: 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-7px);
+
+            border-color: #3b3b3b;
+        }
+
+        .news-image {
+            height: 210px;
+
+            background-size: cover;
+            background-position: center;
+
+            filter: grayscale(30%);
+
+            transition: transform 0.6s ease, filter 0.6s ease;
+        }
+
+        .news-card:hover .news-image {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        .news-content {
+            padding: 25px;
+        }
+
+        .news-date {
+            color: #e10600;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .news-card h3 {
+            margin-top: 12px;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 25px;
+
+            text-transform: uppercase;
+        }
+
+        .news-card p {
+            margin-top: 10px;
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           DOWNLOAD
+        ========================================================= */
+
+        .download {
+            position: relative;
+
+            border-top: 1px solid #191919;
+            border-bottom: 1px solid #191919;
+
+            text-align: center;
+
+            overflow: hidden;
+        }
+
+        .download::before {
+            content: "";
+
+            position: absolute;
+
+            width: 600px;
+            height: 600px;
+
+            border-radius: 50%;
+
+            background: rgba(225,6,0,0.08);
+
+            filter: blur(100px);
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+        }
+
+        .download > * {
+            position: relative;
+        }
+
+        .download h2 {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: clamp(55px, 8vw, 100px);
+
+            text-transform: uppercase;
+
+            line-height: 0.9;
+        }
+
+        .download p {
+            max-width: 550px;
+
+            margin: 25px auto;
+
+            color: #888;
+
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           FAQ
+        ========================================================= */
+
+        .faq {
+            max-width: 850px;
+
+            margin: auto;
+        }
+
+        .faq-item {
+            border-top: 1px solid #222;
+        }
+
+        .faq-item:last-child {
+            border-bottom: 1px solid #222;
+        }
+
+        .faq-question {
+            width: 100%;
+
+            padding: 25px 0;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: transparent;
+
+            border: none;
+
+            color: white;
+
+            cursor: pointer;
+
+            text-align: left;
+
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 22px;
+
+            text-transform: uppercase;
+        }
+
+        .faq-question span {
+            color: #e10600;
+        }
+
+        .faq-answer {
+            max-height: 0;
+
+            overflow: hidden;
+
+            color: #777;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+
+            transition: max-height 0.35s ease;
+        }
+
+        .faq-answer p {
+            padding-bottom: 25px;
+        }
+
+        .credits-section {
+            border-top: 1px solid var(--mw-line);
+            background: linear-gradient(180deg, rgba(88,152,178,0.045), transparent 72%);
+        }
+
+        .credits-roster {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+            border-top: 1px solid var(--mw-line);
+            border-bottom: 1px solid var(--mw-line);
+        }
+
+        .credit-member {
+            display: flex;
+            min-height: 86px;
+            align-items: center;
+            gap: 14px;
+            padding: 18px;
+            border-right: 1px solid var(--mw-line);
+            background: rgba(10,13,12,0.58);
+        }
+
+        .credit-number {
+            color: var(--mw-blue);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .credit-name {
+            color: #f0f1e8;
+            font-size: clamp(14px, 1.5vw, 18px);
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .footer-credits-link {
+            color: #d1d4c8;
+            font-size: 13px;
+            font-weight: 700;
+            transition: color 0.2s ease;
+        }
+
+        .footer-credits-link:hover {
+            color: var(--mw-blue);
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 60px 8% 30px;
+
+            border-top: 1px solid #181818;
+
+            background: #050505;
+        }
+
+        .footer-top {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            padding-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-family: "Rajdhani", sans-serif;
+
+            font-size: 35px;
+
+            font-weight: 800;
+
+            letter-spacing: 5px;
+        }
+
+        .footer-logo span {
+            color: #e10600;
+        }
+
+        .socials {
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .social {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #252525;
+
+            color: #888;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            transition: 0.25s;
+        }
+
+        .social:hover {
+            color: white;
+
+            border-color: #e10600;
+
+            background: rgba(225,6,0,0.1);
+        }
+
+        .footer-bottom {
+            padding-top: 25px;
+
+            border-top: 1px solid #181818;
+
+            display: flex;
+            justify-content: space-between;
+
+            color: #555;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+        }
+
+        /* =========================================================
+           REVEAL ANIMATION
+        ========================================================= */
+
+        .reveal {
+            opacity: 0;
+
+            transform: translateY(35px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+
+            transform: translateY(0);
+        }
+
+
+          /* =========================================================
+              WARZONE 3 MOD CLIENT
+          ========================================================= */
+
+        .season6 {
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(255, 120, 0, 0.12);
+            border-bottom: 1px solid rgba(255, 120, 0, 0.12);
+            background:
+                radial-gradient(circle at 85% 20%, rgba(255, 91, 0, 0.08), transparent 32%),
+                radial-gradient(circle at 15% 80%, rgba(255, 140, 0, 0.045), transparent 30%);
+        }
+
+        .season6::before {
+            content: "WARZONE";
+            position: absolute;
+            top: 55px;
+            right: -30px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(90px, 15vw, 220px);
+            font-weight: 800;
+            letter-spacing: -5px;
+            color: rgba(255, 102, 0, 0.035);
+            pointer-events: none;
+        }
+
+        .season6 .section-label {
+            color: #ff7200;
+        }
+
+        .season6 .section-title span {
+            color: #ff7200;
+        }
+
+        .season6-unlock {
+            position: relative;
+            padding: 42px;
+            border: 1px solid rgba(255, 114, 0, 0.35);
+            background:
+                linear-gradient(135deg, rgba(255, 114, 0, 0.08), rgba(0,0,0,0.18)),
+                #0a0a0a;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+        }
+
+        .season6-unlock-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 114, 0, 0.45);
+            color: #ff7200;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .season6-unlock h3 {
+            margin-top: 18px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 36px;
+            text-transform: uppercase;
+        }
+
+        .season6-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .season6-grid div {
+            padding: 16px;
+            border: 1px solid #242424;
+            background: rgba(255,255,255,0.025);
+            color: #c7c7c7;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .season6-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            margin-top: 30px;
+            background: #242424;
+            border: 1px solid #242424;
+        }
+
+        .season6-card {
+            min-height: 250px;
+            padding: 36px;
+            background: #090909;
+            transition: 0.3s;
+        }
+
+        .season6-card:hover {
+            background: #101010;
+            transform: translateY(-5px);
+        }
+
+        .season6-card-number {
+            color: #555;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        .season6-card-icon {
+            margin-top: 28px;
+            font-size: 27px;
+        }
+
+        .season6-card h3 {
+            margin-top: 15px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 27px;
+            text-transform: uppercase;
+        }
+
+        .season6-card p {
+            margin-top: 9px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .season6-maps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 20px;
+        }
+
+        .season6-maps span {
+            padding: 6px 9px;
+            border: 1px solid rgba(255, 114, 0, 0.3);
+            color: #ff7200;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+
+        @media (max-width: 900px) {
+            .season6-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .season6-features {
+                grid-template-columns: 1fr;
+            }
+
+
+            .nav-links,
+            .nav-button {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero {
+                padding-left: 6%;
+                padding-right: 6%;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                display: block;
+            }
+
+            .section-description {
+                margin-top: 20px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+            nav {
+                height: 98px;
+            }
+
+            nav.scrolled {
+                height: 76px;
+            }
+
+            .logo-image {
+                height: 72px;
+            }
+
+            .logo.has-image .logo-image {
+                width: 72px;
+            }
+
+            nav.scrolled .logo.has-image .logo-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .season6-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .season6-unlock,
+            .season6-card {
+                padding: 28px;
+            }
+
+
+            section {
+                padding: 80px 6%;
+            }
+
+            .hero h1 {
+                font-size: 85px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .language-switcher {
+                margin-left: 0;
+            }
+
+            .footer-top,
+            .footer-bottom {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 25px;
+            }
+        }
+
+        /* =========================================================
+           WARZONE 3 FIELD BRIEFING THEME
+        ========================================================= */
+
+        :root {
+            --mw-red: #e10600;
+            --mw-blue: #5898B2;
+            --mw-olive: var(--mw-blue);
+            --mw-panel: #0b0d0a;
+            --mw-line: rgba(88, 152, 178, 0.24);
+        }
+
+        body {
+            background: #080907;
+            background-image: linear-gradient(135deg, #0b0d0a 0%, #080907 52%, #0e0b0a 100%);
+        }
+
+        .background-grid {
+            background-image:
+                linear-gradient(rgba(88,152,178,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(88,152,178,0.035) 1px, transparent 1px);
+            background-size: 56px 56px;
+        }
+
+        nav {
+            border-bottom-color: var(--mw-line);
+        }
+
+        .language-switcher {
+            border-radius: 2px;
+            border-color: var(--mw-line);
+        }
+
+        .language-switcher button,
+        .language-switcher button.active {
+            border-radius: 1px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 108px 4.5% 34px;
+            z-index: 0;
+            border: 1px solid rgba(88,152,178,0.2);
+            clip-path: polygon(0 0, 23% 0, 23% 1px, 77% 1px, 77% 0, 100% 0, 100% 100%, 72% 100%, 72% calc(100% - 1px), 28% calc(100% - 1px), 28% 100%, 0 100%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content::before {
+            content: "JUP9IW // WARZONE 3 MOD CLIENT";
+            display: block;
+            margin-bottom: 18px;
+            color: var(--mw-olive);
+            font-family: "Rajdhani", sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        html[lang="fr"] .hero-content::before {
+            content: "JUP9IW // CLIENT MOD WARZONE 3";
+        }
+
+        .status {
+            border-color: var(--mw-line);
+            background: rgba(11,13,10,0.78);
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+        }
+
+        .status-dot {
+            background: var(--mw-red);
+            box-shadow: 0 0 12px rgba(225,6,0,0.7);
+            animation: tactical-pulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes tactical-pulse {
+            50% {
+                opacity: 0.45;
+                box-shadow: 0 0 4px rgba(225,6,0,0.35);
+            }
+        }
+
+        .hero h1 {
+            text-shadow: 0 8px 45px rgba(0,0,0,0.65);
+        }
+
+        .hero-subtitle {
+            padding-left: 18px;
+            border-left: 2px solid var(--mw-red);
+        }
+
+        .hero-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            max-width: 620px;
+            margin-top: 27px;
+            border-top: 1px solid var(--mw-line);
+            border-bottom: 1px solid var(--mw-line);
+            background: rgba(7,9,7,0.56);
+        }
+
+        .hero-meta > div {
+            min-width: 0;
+            padding: 12px 14px;
+        }
+
+        .hero-meta > div + div {
+            border-left: 1px solid var(--mw-line);
+        }
+
+        .hero-meta span,
+        .hero-meta strong {
+            display: block;
+        }
+
+        .hero-meta span {
+            color: #797d70;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .hero-meta strong {
+            margin-top: 5px;
+            color: #e5e7dc;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+
+        .hero-buttons .btn {
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+        }
+
+        .btn-primary {
+            background: var(--mw-red);
+            border-color: var(--mw-red);
+        }
+
+        .btn-secondary {
+            border-color: var(--mw-line);
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--mw-olive);
+        }
+
+        .section-label::before {
+            content: "";
+            display: inline-block;
+            width: 22px;
+            height: 2px;
+            background: var(--mw-red);
+        }
+
+        .section-title {
+            text-shadow: 0 8px 35px rgba(0,0,0,0.35);
+        }
+
+        .about-text p {
+            padding-left: 16px;
+            border-left: 1px solid var(--mw-line);
+        }
+
+        .about-text strong {
+            color: var(--mw-olive);
+        }
+
+        .terminal {
+            border-color: var(--mw-line);
+            background: linear-gradient(145deg, #10120e, #080907 72%);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.45);
+        }
+
+        .terminal-bar {
+            border-bottom-color: var(--mw-line);
+        }
+
+        .terminal-bar::after {
+            content: "FIELD REPORT // JUP9IW";
+            margin-left: auto;
+            color: #727766;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .feature {
+            border-top: 2px solid transparent;
+            background: var(--mw-panel);
+        }
+
+        .feature:hover {
+            border-top-color: var(--mw-red);
+            background: #11140f;
+        }
+
+        .feature-number,
+        .season6-card-number {
+            color: var(--mw-olive);
+        }
+
+        .feature-icon {
+            color: var(--mw-red);
+        }
+
+        .news-card {
+            border-color: var(--mw-line);
+            border-top: 2px solid var(--mw-red);
+            background: var(--mw-panel);
+        }
+
+        .news-card:hover {
+            border-color: rgba(225,6,0,0.72);
+        }
+
+        .news-date {
+            color: var(--mw-olive);
+        }
+
+        .season6 {
+            border-top-color: var(--mw-line);
+            border-bottom-color: var(--mw-line);
+            background:
+                linear-gradient(135deg, rgba(88,152,178,0.045), transparent 45%),
+                linear-gradient(315deg, rgba(225,6,0,0.055), transparent 40%),
+                #090b09;
+        }
+
+        .season6::before {
+            color: rgba(88,152,178,0.045);
+        }
+
+        .season6 .section-label,
+        .season6 .section-title span {
+            color: var(--mw-olive);
+        }
+
+        .season6-unlock {
+            border-color: rgba(88,152,178,0.36);
+            background: linear-gradient(135deg, rgba(88,152,178,0.07), rgba(225,6,0,0.035)), #0a0c09;
+        }
+
+        .season6-unlock-badge,
+        .season6-maps span {
+            border-color: rgba(88,152,178,0.46);
+            color: var(--mw-olive);
+        }
+
+        .season6-grid div {
+            border-color: var(--mw-line);
+        }
+
+        .season6-card {
+            background: #090b09;
+        }
+
+        .season6-card:hover {
+            background: #11140f;
+        }
+
+        .faq-item {
+            border-top-color: var(--mw-line);
+        }
+
+        .faq-item:last-child {
+            border-bottom-color: var(--mw-line);
+        }
+
+        .faq-question span {
+            color: var(--mw-olive);
+        }
+
+        footer {
+            border-top-color: var(--mw-line);
+            background: #070907;
+        }
+
+        .social:hover {
+            border-color: var(--mw-red);
+            background: rgba(225,6,0,0.12);
+        }
+
+        .ops-console {
+            padding: 40px 8% 76px;
+            border-top: 1px solid var(--mw-line);
+            background:
+                linear-gradient(90deg, rgba(88,152,178,0.025) 1px, transparent 1px),
+                linear-gradient(rgba(88,152,178,0.025) 1px, transparent 1px),
+                linear-gradient(180deg, #0a0c09, #080907);
+            background-size: 42px 42px, 42px 42px, auto;
+        }
+
+        .ops-console-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .ops-console-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 28px;
+            margin-bottom: 24px;
+        }
+
+        .ops-kicker {
+            color: var(--mw-olive);
+            font-family: "Rajdhani", sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+        }
+
+        .ops-console-heading h2 {
+            margin-top: 8px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 36px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .ops-console-heading p {
+            max-width: 400px;
+            color: #85887d;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .ops-tabs {
+            display: grid;
+               WARZONE 3 FIELD BRIEFING THEME
+            border-top: 1px solid var(--mw-line);
+            border-bottom: 1px solid var(--mw-line);
+            background: rgba(5,7,5,0.78);
+        }
+
+        .ops-tab {
+            position: relative;
+            min-height: 58px;
+            padding: 12px 18px;
+            border: 0;
+            border-right: 1px solid var(--mw-line);
+            background: transparent;
+            color: #777b70;
+            cursor: pointer;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            text-align: left;
+            text-transform: uppercase;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+
+        .ops-tab:last-child {
+            border-right: 0;
+        }
+
+        .ops-tab::before {
+            content: attr(data-index);
+            display: block;
+            margin-bottom: 5px;
+            color: #4f5349;
+            font-size: 9px;
+            letter-spacing: 2px;
+        }
+
+        .ops-tab:hover,
+        .ops-tab[aria-selected="true"] {
+            background: linear-gradient(180deg, rgba(88,152,178,0.15), rgba(88,152,178,0.035));
+            color: #f0f1e8;
+        }
+
+        .ops-tab[aria-selected="true"]::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -1px;
+            left: 0;
+            height: 2px;
+            background: var(--mw-blue);
+            box-shadow: 0 0 16px rgba(88,152,178,0.55);
+        }
+
+        .ops-tab:focus-visible {
+            outline: 2px solid var(--mw-olive);
+            outline-offset: -3px;
+        }
+
+        .ops-panel {
+            display: none;
+            min-height: 270px;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 0.44fr);
+            gap: 42px;
+            align-items: center;
+            padding: 36px;
+            border: 1px solid var(--mw-line);
+            border-top: 0;
+            background: linear-gradient(110deg, rgba(14,17,12,0.96), rgba(8,9,7,0.96));
+            animation: panel-arrive 0.28s ease both;
+        }
+
+        .ops-panel.is-active {
+            display: grid;
+        }
+
+        @keyframes panel-arrive {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ops-panel h3 {
+            margin-top: 9px;
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(30px, 4vw, 48px);
+            line-height: 0.98;
+            text-transform: uppercase;
+        }
+
+        .ops-panel-copy {
+            max-width: 650px;
+            margin-top: 16px;
+            color: #a1a398;
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        .ops-panel-stamp {
+            display: flex;
+            min-height: 178px;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 18px;
+            border: 1px solid rgba(88,152,178,0.28);
+            background:
+                linear-gradient(135deg, rgba(225,6,0,0.1), transparent 58%),
+                repeating-linear-gradient(135deg, rgba(88,152,178,0.04) 0 1px, transparent 1px 8px),
+                #090b08;
+        }
+
+        .ops-panel-stamp span {
+            color: #85897a;
+            font-family: "Rajdhani", sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .ops-panel-stamp strong {
+            color: var(--mw-olive);
+            font-family: "Rajdhani", sans-serif;
+            font-size: clamp(26px, 3vw, 39px);
+            line-height: 0.95;
+            text-transform: uppercase;
+        }
+
+        .ops-panel-stamp small {
+            padding-top: 10px;
+            border-top: 1px solid var(--mw-line);
+            color: #73776b;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        @media (max-width: 900px) {
+            .mw-menu {
+                padding-right: 6%;
+                padding-left: 6%;
+            }
+
+            .mode-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .mode-tile {
+                min-height: 225px;
+            }
+
+            .ops-console-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .ops-panel {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .ops-panel-stamp {
+                min-height: 130px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .logo-image {
+                height: 54px;
+            }
+
+            .logo.has-image .logo-image {
+                width: 54px;
+            }
+
+            nav.scrolled .logo.has-image .logo-image {
+                width: 48px;
+                height: 48px;
+            }
+
+            .hero-content::before {
+                font-size: 10px;
+                letter-spacing: 0;
+            }
+
+            .hero h1 {
+                font-size: 60px;
+                line-height: 1;
+                letter-spacing: 0;
+            }
+
+            .section-title,
+            .mw-menu-heading h2,
+            .ops-console-heading h2,
+            .ops-panel h3,
+            .feature h3,
+            .news-card h3,
+            .season6-unlock h3,
+            .season6-card h3,
+            .download h2,
+            .faq-question {
+                letter-spacing: 0;
+            }
+
+            .section-title,
+            .mw-menu-heading h2 {
+                font-size: 36px;
+                line-height: 1.05;
+            }
+
+            .ops-console-heading h2 {
+                font-size: 30px;
+                line-height: 1.1;
+            }
+
+            .ops-panel h3 {
+                font-size: 27px;
+                line-height: 1.08;
+            }
+
+            .feature h3,
+            .news-card h3,
+            .season6-unlock h3,
+            .season6-card h3 {
+                font-size: 22px;
+                line-height: 1.1;
+            }
+
+            .download h2 {
+                font-size: 44px;
+                line-height: 1;
+            }
+
+            .faq-question {
+                font-size: 19px;
+                line-height: 1.2;
+            }
+
+            .ops-tab {
+                font-size: 12px;
+                letter-spacing: 0;
+            }
+
+            .hero .status,
+            .hero-meta strong {
+                letter-spacing: 0;
+            }
+
+            .hero-meta strong {
+                font-size: 10px;
+            }
+
+            .section-label {
+                letter-spacing: 1px;
+            }
+
+            .hero::after {
+                inset: 100px 3% 24px;
+            }
+
+            .hero-meta > div {
+                padding: 10px 8px;
+            }
+
+            .hero-meta span {
+                font-size: 8px;
+                letter-spacing: 1px;
+            }
+
+            .hero-meta strong {
+                font-size: 12px;
+            }
+
+            .ops-console {
+                padding: 36px 6% 56px;
+            }
+
+            .mw-menu {
+                min-height: auto;
+                padding: 100px 6% 34px;
+            }
+
+            .mw-menu-heading {
+                padding-top: 80px;
+            }
+
+            .mode-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 9px;
+            }
+
+            .mode-tile {
+                min-height: 190px;
+                padding: 12px;
+            }
+
+            .mode-tile h3 {
+                font-size: 20px;
+            }
+
+            .mode-tile p {
+                font-size: 10px;
+            }
+
+            .mode-tile-action {
+                margin: 14px -12px -12px;
+                padding: 10px 11px;
+                font-size: 9px;
+                letter-spacing: 1px;
+            }
+
+            .mw-menu-footer {
+                flex-wrap: wrap;
+                margin-top: 18px;
+                font-size: 9px;
+            }
+
+            .ops-tabs {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .ops-tab:nth-child(2) {
+                border-right: 0;
+            }
+
+            .ops-tab:nth-child(-n+2) {
+                border-bottom: 1px solid var(--mw-line);
+            }
+
+            .ops-panel {
+                min-height: 0;
+                padding: 24px 18px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .status-dot {
+                animation: none;
+            }
+
+            .hero-content,
+            .hero-image,
+            .mw-menu-heading,
+            .mode-grid,
+            .ops-panel {
+                animation: none;
+            }
+
+            .mode-tile,
+            .mode-tile::before,
+            .mode-tile-action {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+    <div class="glow"></div>
+    <div class="noise"></div>
+
+    <!-- =========================================================
+         NAVIGATION
+    ========================================================== -->
+
+    <nav id="navbar">
+
+        <a href="#" class="logo">
+            <img class="logo-image" src="assets/jup9iw-logo.png" alt="JUP9IW project logo">
+            <span class="logo-wordmark">JUP<span>9</span>IW</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#news">News</a></li>
+            <li><a href="#season6">Warzone 3</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#download">Project</a></li>
+        </ul>
+
+        <!-- Replace with your Discord invite -->
+
+        <a href="https://discord.gg/9p2cH2Mtw" target="_blank" class="nav-button">
+            Discord
+        </a>
+
+        <div class="language-switcher" aria-label="Language">
+            <button type="button" data-lang="fr">FR</button>
+            <button type="button" data-lang="en">EN</button>
+        </div>
+
+        <div class="mobile-menu" onclick="toggleMenu()">
+            ☰
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <header class="hero">
+
+        <div class="hero-image"></div>
+
+        <div class="hero-content reveal">
+
+            <div class="status">
+                <div class="status-dot"></div>
+                Mod in development
+            </div>
+
+            <h1>
+                JUP<span>9</span>IW
+            </h1>
+
+            <p class="hero-subtitle">
+                JUP9IW is a client containing an unofficial Warzone 3 mod
+                currently in development. Follow the project as the client
+                and its integrated mod take shape.
+            </p>
+
+            <div class="hero-meta reveal">
+                <div>
+                    <span>PROJECT</span>
+                    <strong>CLIENT + MOD</strong>
+                </div>
+                <div>
+                    <span>TARGET</span>
+                    <strong>WARZONE 3</strong>
+                </div>
+                <div>
+                    <span>STATUS</span>
+                    <strong>IN DEVELOPMENT</strong>
+                </div>
+            </div>
+
+            <div class="hero-buttons">
+
+                <a href="#mw-menu" class="btn btn-primary">
+                    Enter JUP9IW
+                </a>
+
+                <a href="#about" class="btn btn-secondary">
+                    Project dossier
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            Scroll to explore
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         JUP9IW MODE SELECT
+    ========================================================== -->
+
+    <section class="mw-menu" id="mw-menu" aria-labelledby="mw-menu-title">
+        <div class="mw-menu-topline">
+            <div class="mw-menu-identity">
+                <div class="mw-menu-monogram" aria-hidden="true">J9</div>
+                <div>
+                    <small data-i18n="menu.operator.label">OPERATOR PROFILE</small>
+                    <strong>JUP9IW // <span data-i18n="menu.operator.value">COMMUNITY</span></strong>
+                </div>
+            </div>
+            <div class="mw-menu-status">
+                <small data-i18n="menu.status.label">PROJECT STATUS</small>
+                <strong data-i18n="menu.status.value">IN DEVELOPMENT</strong>
+            </div>
+        </div>
+
+        <div class="mw-menu-heading">
+            <div class="ops-kicker" data-i18n="menu.kicker">JUP9IW // SELECT YOUR OPERATION</div>
+            <h2 id="mw-menu-title" data-i18n="menu.title">Choose your<br>destination.</h2>
+        </div>
+
+        <div class="mode-grid">
+            <a class="mode-tile mode-tile--hq" href="#about">
+                <span class="mode-tile-index">01 // JUP9IW</span>
+                <div class="mode-tile-content">
+                    <span class="mode-tile-mark">HQ</span>
+                    <h3 data-i18n="menu.hq.title">Project HQ</h3>
+                    <p data-i18n="menu.hq.text">The project overview, its purpose and the people around it.</p>
+                </div>
+                <span class="mode-tile-action"><span data-i18n="menu.action">Open briefing</span><span aria-hidden="true">→</span></span>
+            </a>
+
+            <a class="mode-tile mode-tile--mod" href="#features">
+                <span class="mode-tile-index">02 // WORKSTREAM</span>
+                <div class="mode-tile-content">
+                    <span class="mode-tile-mark">MOD</span>
+                    <h3 data-i18n="menu.mod.title">Mod operations</h3>
+                    <p data-i18n="menu.mod.text">Explore the goals of the unofficial Warzone 3 mod included in JUP9IW.</p>
+                </div>
+                <span class="mode-tile-action"><span data-i18n="menu.action">Open briefing</span><span aria-hidden="true">→</span></span>
+            </a>
+
+            <a class="mode-tile mode-tile--client" href="#season6">
+                <span class="mode-tile-index">03 // WORKSTREAM</span>
+                <div class="mode-tile-content">
+                    <span class="mode-tile-mark">J9</span>
+                    <h3 data-i18n="menu.client.title">Client terminal</h3>
+                    <p data-i18n="menu.client.text">See what is planned for the dedicated JUP9IW client.</p>
+                </div>
+                <span class="mode-tile-action"><span data-i18n="menu.action">Open briefing</span><span aria-hidden="true">→</span></span>
+            </a>
+
+            <a class="mode-tile mode-tile--intel" href="#news">
+                <span class="mode-tile-index">04 // INTEL</span>
+                <div class="mode-tile-content">
+                    <span class="mode-tile-mark">INTEL</span>
+                    <h3 data-i18n="menu.intel.title">Mission updates</h3>
+                    <p data-i18n="menu.intel.text">Read project news, development notes and announcements.</p>
+                </div>
+                <span class="mode-tile-action"><span data-i18n="menu.action">Open briefing</span><span aria-hidden="true">→</span></span>
+            </a>
+        </div>
+
+        <div class="mw-menu-footer">
+            <span data-i18n="menu.footer.left">WARZONE 3 MOD // JUP9IW CLIENT</span>
+            <span data-i18n="menu.footer.right">SELECT A BRIEFING TO CONTINUE</span>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         JUP9IW OPERATIONS CONSOLE
+    ========================================================== -->
+
+    <section class="ops-console" aria-labelledby="ops-title">
+        <div class="ops-console-inner">
+            <div class="ops-console-heading">
+                <div>
+                    <div class="ops-kicker" data-i18n="ops.kicker">JUP9IW // OPERATIONS CONSOLE</div>
+                    <h2 id="ops-title" data-i18n="ops.title">Project briefing</h2>
+                </div>
+                <p data-i18n="ops.intro">Select a briefing tab to learn about the JUP9IW client, its included unofficial Warzone 3 mod and the project roadmap.</p>
+            </div>
+
+            <div class="ops-tabs" role="tablist" aria-label="JUP9IW project briefing" data-i18n-aria="ops.tablist">
+                <button class="ops-tab" id="ops-tab-brief" type="button" role="tab" aria-selected="true" aria-controls="ops-panel-brief" tabindex="0" data-index="01" data-tab="brief" data-i18n="ops.tab.brief">Brief</button>
+                <button class="ops-tab" id="ops-tab-mod" type="button" role="tab" aria-selected="false" aria-controls="ops-panel-mod" tabindex="-1" data-index="02" data-tab="mod" data-i18n="ops.tab.mod">The Mod</button>
+                <button class="ops-tab" id="ops-tab-client" type="button" role="tab" aria-selected="false" aria-controls="ops-panel-client" tabindex="-1" data-index="03" data-tab="client" data-i18n="ops.tab.client">The Client</button>
+                <button class="ops-tab" id="ops-tab-roadmap" type="button" role="tab" aria-selected="false" aria-controls="ops-panel-roadmap" tabindex="-1" data-index="04" data-tab="roadmap" data-i18n="ops.tab.roadmap">Roadmap</button>
+            </div>
+
+            <div class="ops-panels">
+                <article class="ops-panel is-active" id="ops-panel-brief" role="tabpanel" aria-labelledby="ops-tab-brief" tabindex="0">
+                    <div>
+                        <div class="ops-kicker" data-i18n="ops.brief.kicker">MISSION BRIEF // 001</div>
+                        <h3 data-i18n="ops.brief.title">One client.<br>One integrated mod.</h3>
+                        <p class="ops-panel-copy" data-i18n="ops.brief.copy">JUP9IW is the client, and it contains an unofficial Warzone 3 mod currently in development. This briefing covers the client, the mod inside it and updates from the JUP9IW team.</p>
+                    </div>
+                    <div class="ops-panel-stamp">
+                        <span data-i18n="ops.stamp.project">PROJECT ID // JUP9IW</span>
+                        <strong data-i18n="ops.brief.stamp">WARZONE<br>3 MOD</strong>
+                        <small data-i18n="ops.stamp.status">STATUS // IN DEVELOPMENT</small>
+                    </div>
+                </article>
+
+                <article class="ops-panel" id="ops-panel-mod" role="tabpanel" aria-labelledby="ops-tab-mod" tabindex="0" hidden>
+                    <div>
+                        <div class="ops-kicker" data-i18n="ops.mod.kicker">WORKSTREAM // 02</div>
+                        <h3 data-i18n="ops.mod.title">The Warzone 3<br>mod inside JUP9IW.</h3>
+                        <p class="ops-panel-copy" data-i18n="ops.mod.copy">JUP9IW contains an unofficial mod for Warzone 3, currently in development by the JUP9IW team. Its planned gameplay changes and feature set belong to this project and are not presented as official game features.</p>
+                    </div>
+                    <div class="ops-panel-stamp">
+                        <span data-i18n="ops.stamp.workstream">WORKSTREAM // MOD</span>
+                        <strong data-i18n="ops.mod.stamp">GAMEPLAY<br>PROJECT</strong>
+                        <small data-i18n="ops.stamp.status">STATUS // IN DEVELOPMENT</small>
+                    </div>
+                </article>
+
+                <article class="ops-panel" id="ops-panel-client" role="tabpanel" aria-labelledby="ops-tab-client" tabindex="0" hidden>
+                    <div>
+                        <div class="ops-kicker" data-i18n="ops.client.kicker">WORKSTREAM // 03</div>
+                        <h3 data-i18n="ops.client.title">The JUP9IW<br>mod client.</h3>
+                        <p class="ops-panel-copy" data-i18n="ops.client.copy">JUP9IW is the client that contains and runs the Warzone 3 mod. The client and its included mod are being developed together as one unofficial project by the JUP9IW team.</p>
+                    </div>
+                    <div class="ops-panel-stamp">
+                        <span data-i18n="ops.stamp.client">WORKSTREAM // CLIENT</span>
+                        <strong data-i18n="ops.client.stamp">JUP9IW<br>CLIENT</strong>
+                        <small data-i18n="ops.client.note">DETAILS // BEING DEFINED</small>
+                    </div>
+                </article>
+
+                <article class="ops-panel" id="ops-panel-roadmap" role="tabpanel" aria-labelledby="ops-tab-roadmap" tabindex="0" hidden>
+                    <div>
+                        <div class="ops-kicker" data-i18n="ops.roadmap.kicker">PROJECT PATH // 04</div>
+                        <h3 data-i18n="ops.roadmap.title">Progress, not<br>promises.</h3>
+                        <p class="ops-panel-copy" data-i18n="ops.roadmap.copy">The roadmap follows the development of the JUP9IW client and its included Warzone 3 mod as one project. The team will share progress, compatibility notes and release information through JUP9IW channels; no dates are announced here.</p>
+                    </div>
+                    <div class="ops-panel-stamp">
+                        <span data-i18n="ops.stamp.path">PROJECT PATH // 04 STAGES</span>
+                        <strong data-i18n="ops.roadmap.stamp">SCOPE<br>TO RELEASE</strong>
+                        <small data-i18n="ops.roadmap.note">DATES // NOT ANNOUNCED</small>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         ABOUT
+    ========================================================== -->
+
+    <section id="about">
+
+        <div class="section-header reveal">
+
+            <div>
+                <div class="section-label">
+                    01 / The Project
+                </div>
+
+                <h2 class="section-title">
+                    The JUP9IW<br>Warzone 3 client.
+                </h2>
+            </div>
+
+            <p class="section-description">
+                JUP9IW is the client for an unofficial Warzone 3 mod
+                currently in development. This page covers the client,
+                the mod it contains and updates from its developers.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-text reveal">
+
+                <p>
+                    <strong>JUP9IW</strong> is a client that contains
+                    an unofficial mod for Warzone 3. The client and
+                    its mod are currently being developed together.
+                </p>
+
+                <br>
+
+                <p>
+                    The JUP9IW client contains the integrated mod.
+                    It is built by the JUP9IW team as an unofficial
+                    project, with development updates shared through
+                    the team's own channels.
+                </p>
+
+                <br>
+
+                <p>
+                    The Warzone 3 mod inside JUP9IW is unofficial and
+                    developed by the JUP9IW team. Its goals, features
+                    and direction belong to our project.
+                </p>
+
+            </div>
+
+
+            <div class="terminal reveal">
+
+                <div class="terminal-bar">
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                    <div class="terminal-dot"></div>
+                </div>
+
+                <div class="terminal-content">
+
+                    <div>
+                        <span class="red">$</span>
+                        starting jup9iw project...
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        project =
+                        <span class="white">"JUP9IW"</span>
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        target =
+                        <span class="white">"WARZONE 3 MOD"</span>
+                    </div>
+
+                    <div>
+                        <span class="red">></span>
+                        type =
+                        <span class="white">"MOD / CLIENT"</span>
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <span class="red">></span>
+                        status: in development.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FEATURES
+    ========================================================== -->
+
+    <section id="features">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    02 / Project Focus
+                </div>
+
+                <h2 class="section-title">
+                    The work<br>in progress.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+                The JUP9IW client and its included Warzone 3 mod are
+                being developed together by our team.
+            </p>
+
+        </div>
+
+
+        <div class="features-grid">
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    001
+                </div>
+
+                <div class="feature-icon">
+                    ◈
+                </div>
+
+                <h3>
+                    Warzone 3 Mod
+                </h3>
+
+                <p>
+                    An unofficial Warzone 3 mod included in and
+                    developed with the JUP9IW client.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    002
+                </div>
+
+                <div class="feature-icon">
+                    ⬡
+                </div>
+
+                <h3>
+                    JUP9IW Client
+                </h3>
+
+                <p>
+                    JUP9IW is the client that contains the Warzone 3
+                    mod; both are being developed together.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    003
+                </div>
+
+                <div class="feature-icon">
+                    ◎
+                </div>
+
+                <h3>
+                    Community
+                </h3>
+
+                <p>
+                    A place for players and developers to follow
+                    project updates and announcements.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    004
+                </div>
+
+                <div class="feature-icon">
+                    ⌁
+                </div>
+
+                <h3>
+                    Development
+                </h3>
+
+                <p>
+                    The JUP9IW client and its integrated Warzone 3
+                    mod are in development by the project team.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    005
+                </div>
+
+                <div class="feature-icon">
+                    ◫
+                </div>
+
+                <h3>
+                    Project Updates
+                </h3>
+
+                <p>
+                    Follow JUP9IW channels for development notes and
+                    announcements from the project team.
+                </p>
+
+            </div>
+
+
+            <div class="feature reveal">
+
+                <div class="feature-number">
+                    006
+                </div>
+
+                <div class="feature-icon">
+                    +
+                </div>
+
+                <h3>
+                    More to Come
+                </h3>
+
+                <p>
+                    The project is evolving. Further information
+                    will be published when it is ready to share.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================================
+         WARZONE 3 MOD CLIENT
+    ========================================================== -->
+
+    <section id="season6" class="season6">
+
+        <div class="section-header reveal">
+
+            <div>
+                <div class="section-label">
+                    03 / Warzone 3 Mod
+                </div>
+
+                <h2 class="section-title">
+                    JUP9IW Client<br><span>Warzone 3 Mod.</span>
+                </h2>
+            </div>
+
+            <p class="section-description">
+                JUP9IW is the client containing an unofficial Warzone 3
+                mod in development. The information below describes
+                this project's direction and current work.
+            </p>
+
+        </div>
+
+        <div class="season6-unlock reveal">
+            <div class="season6-unlock-badge">IN DEVELOPMENT</div>
+            <h3>One client with an integrated mod</h3>
+
+            <div class="season6-grid">
+                <div>🎮 Mod for Warzone 3</div>
+                <div>⚙️ Included in the JUP9IW client</div>
+                <div>🧭 Project scope being defined</div>
+                <div>🔎 Compatibility work by JUP9IW</div>
+                <div>📋 Installation details to come</div>
+                <div>🛠️ Updates from the JUP9IW team</div>
+                <div>📦 Release plans not announced</div>
+                <div>ℹ️ Unofficial JUP9IW project</div>
+            </div>
+        </div>
+
+        <div class="season6-features">
+
+            <div class="season6-card reveal">
+                <div class="season6-card-number">001</div>
+                <div class="season6-card-icon">🎮</div>
+                <h3>Warzone 3 Mod</h3>
+                <p>
+                    An unofficial Warzone 3 mod is integrated into
+                    the JUP9IW client and is currently being developed
+                    by the JUP9IW team.
+                </p>
+            </div>
+
+            <div class="season6-card reveal">
+                <div class="season6-card-number">002</div>
+                <div class="season6-card-icon">🖥️</div>
+                <h3>JUP9IW Client</h3>
+                <p>
+                    JUP9IW is the client that contains the mod. The
+                    client and its Warzone 3 mod are developed as one
+                    unofficial project.
+                </p>
+
+                <div class="season6-maps">
+                    <span>WARZONE 3</span>
+                    <span>MOD CLIENT</span>
+                    <span>JUP9IW</span>
+                </div>
+            </div>
+
+            <div class="season6-card reveal">
+                <div class="season6-card-number">003</div>
+                <div class="season6-card-icon">📡</div>
+                <h3>Development Updates</h3>
+                <p>
+                    Follow the JUP9IW team for project-made updates,
+                    compatibility notes and release information.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         NEWS
+    ========================================================== -->
+
+    <section id="news">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    04 / Project News
+                </div>
+
+                <h2 class="section-title">
+                    Latest<br>updates.
+                </h2>
+
+            </div>
+
+            <p class="section-description">
+                Follow updates from the JUP9IW team as the client
+                and its unofficial Warzone 3 mod are developed.
+            </p>
+
+        </div>
+
+
+        <div class="news-grid">
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news1.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        27.09.2026
+                    </div>
+
+                    <h3>
+                        JUP9IW project
+                    </h3>
+
+                    <p>
+                        JUP9IW is the client containing an unofficial
+                        Warzone 3 mod, currently in development.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news2.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        DEVELOPMENT
+                    </div>
+
+                    <h3>
+                        Work in progress
+                    </h3>
+
+                    <p>
+                        The JUP9IW team is developing the client and its
+                        integrated mod as one project.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news3.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        COMMUNITY
+                    </div>
+
+                    <h3>
+                        Follow JUP9IW
+                    </h3>
+
+                    <p>
+                        Join the community to follow project
+                        announcements and development updates.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news4.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        PROJECT SCOPE
+                    </div>
+
+                    <h3>
+                        Defining the project
+                    </h3>
+
+                    <p>
+                        The unofficial Warzone 3 mod is integrated
+                        into the JUP9IW client and developed by our team.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news5.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        CLIENT
+                    </div>
+
+                    <h3>
+                        About the JUP9IW client
+                    </h3>
+
+                    <p>
+                        JUP9IW is the client containing the Warzone 3
+                        mod; both are developed together.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card reveal">
+
+                <div
+                    class="news-image"
+                    style="
+                    background-image:
+                    linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),
+                    url('assets/news6.jpg');
+                    ">
+                </div>
+
+                <div class="news-content">
+
+                    <div class="news-date">
+                        COMPATIBILITY
+                    </div>
+
+                    <h3>
+                        Release information
+                    </h3>
+
+                    <p>
+                        The JUP9IW team will share compatibility and
+                        release information through project channels.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         DOWNLOAD
+    ========================================================== -->
+
+    <section id="download" class="download">
+
+        <div class="section-label reveal">
+            05 / Project Access
+        </div>
+
+        <h2 class="reveal">
+            Follow the<br>
+            <span style="color:#e10600;">
+                development.
+            </span>
+        </h2>
+
+        <p class="reveal">
+            Follow JUP9IW channels for updates on the client and
+            the Warzone 3 mod it contains.
+        </p>
+
+        <div class="hero-buttons reveal"
+             style="justify-content:center;">
+
+            <!-- Replace with your real GitHub release/download URL -->
+
+            <a
+                href="https://github.com/"
+                target="_blank"
+                class="btn btn-primary">
+                GitHub
+            </a>
+
+            <!-- Replace with your Discord invite -->
+
+            <a
+                href="https://discord.gg/9p2cH2Mtw"
+                target="_blank"
+                class="btn btn-secondary">
+                Discord
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FAQ
+    ========================================================== -->
+
+    <section id="faq">
+
+        <div class="section-header reveal">
+
+            <div>
+
+                <div class="section-label">
+                    06 / Project Information
+                </div>
+
+                <h2 class="section-title">
+                    Frequently<br>asked.
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="faq">
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    What is JUP9IW?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        JUP9IW is the client containing an unofficial
+                        Warzone 3 mod, currently in development by the
+                        JUP9IW team.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    What is the mod focused on?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        The unofficial Warzone 3 mod is integrated
+                        into the JUP9IW client and developed by our
+                        team.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Are the client and its mod available yet?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        The JUP9IW client and its integrated Warzone 3
+                        mod are in development. Release information
+                        will be shared through JUP9IW channels.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    Where can I follow development?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        Follow JUP9IW channels and the project
+                        Discord for updates published by our team.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="faq-item reveal">
+
+                <button class="faq-question">
+                    What is the JUP9IW client?
+                    <span>+</span>
+                </button>
+
+                <div class="faq-answer">
+                    <p>
+                        JUP9IW is the client itself: it contains the
+                        unofficial Warzone 3 mod currently in development.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PROJECT CREDITS
+    ========================================================== -->
+
+    <section id="credits" class="credits-section">
+        <div class="section-header reveal">
+            <div>
+                <div class="section-label" data-i18n="credits.label">07 / Credits</div>
+                <h2 class="section-title" data-i18n="credits.title">Project<br>members.</h2>
+            </div>
+            <p class="section-description" data-i18n="credits.description">The people listed as members of the JUP9IW project.</p>
+        </div>
+
+        <div class="credits-roster reveal">
+            <div class="credit-member"><span class="credit-number">01</span><strong class="credit-name">Delta</strong></div>
+            <div class="credit-member"><span class="credit-number">02</span><strong class="credit-name">Joel</strong></div>
+            <div class="credit-member"><span class="credit-number">03</span><strong class="credit-name">Psa8.z</strong></div>
+            <div class="credit-member"><span class="credit-number">04</span><strong class="credit-name">Mamisclic</strong></div>
+            <div class="credit-member"><span class="credit-number">05</span><strong class="credit-name">Pipes Cant Code</strong></div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
+
+        <div class="footer-top">
+
+            <div class="footer-logo">
+                JUP<span>9</span>IW
+            </div>
+
+            <a class="footer-credits-link" href="#credits" data-i18n="credits.link">Credits</a>
+
+            <div class="socials">
+
+                <a
+                    href="https://github.com/"
+                    target="_blank"
+                    class="social">
+                    GH
+                </a>
+
+                <a
+                    href="https://discord.gg/9p2cH2Mtw"
+                    target="_blank"
+                    class="social">
+                    DC
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 JUP9IW. All rights reserved.
+            </span>
+
+            <span>
+                JUP9IW CLIENT // WARZONE 3 MOD
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        const projectLogo = document.querySelector(".logo-image");
+
+        if (projectLogo) {
+            const showProjectLogo = () => {
+                if (projectLogo.naturalWidth > 0) {
+                    projectLogo.closest(".logo").classList.add("has-image");
+                }
+            };
+
+            projectLogo.addEventListener("load", showProjectLogo);
+            projectLogo.addEventListener("error", () => projectLogo.remove(), { once: true });
+
+            if (projectLogo.complete) {
+                showProjectLogo();
+            }
+        }
+
+        const navbar = document.getElementById("navbar");
+
+        window.addEventListener("scroll", () => {
+
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+
+        });
+
+
+        /* =====================================================
+           REVEAL ANIMATION
+        ===================================================== */
+
+        const revealElements =
+            document.querySelectorAll(".reveal");
+
+        const revealObserver =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("visible");
+
+                            revealObserver.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+
+        /* =====================================================
+           FAQ
+        ===================================================== */
+
+        const questions =
+            document.querySelectorAll(".faq-question");
+
+        questions.forEach(question => {
+
+            question.addEventListener("click", () => {
+
+                const answer =
+                    question.nextElementSibling;
+
+                const symbol =
+                    question.querySelector("span");
+
+
+                document
+                    .querySelectorAll(".faq-answer")
+                    .forEach(other => {
+
+                        if (other !== answer) {
+                            other.style.maxHeight = null;
+                        }
+
+                    });
+
+
+                document
+                    .querySelectorAll(".faq-question span")
+                    .forEach(otherSymbol => {
+
+                        if (otherSymbol !== symbol) {
+                            otherSymbol.textContent = "+";
+                        }
+
+                    });
+
+
+                if (answer.style.maxHeight) {
+
+                    answer.style.maxHeight = null;
+
+                    symbol.textContent = "+";
+
+                } else {
+
+                    answer.style.maxHeight =
+                        answer.scrollHeight + "px";
+
+                    symbol.textContent = "−";
+
+                }
+
+            });
+
+        });
+
+
+        /* =====================================================
+           LANGUAGE SWITCHER
+        ===================================================== */
+
+        const translations = {
+            fr: {
+                "nav.about": "Le projet",
+                "nav.features": "Objectifs",
+                "nav.news": "Actualités",
+                "nav.season6": "Warzone 3",
+                "nav.download": "Projet",
+                "nav.faq": "FAQ",
+                "hero.status": "Mod en développement",
+                "hero.subtitle": "JUP9IW est le client qui intègre un mod non officiel pour Warzone 3, actuellement en développement. Suivez l'évolution du client et du mod développé par l'équipe JUP9IW.",
+                "hero.get": "Entrer dans JUP9IW",
+                "hero.explore": "Dossier du projet",
+                "hero.scroll": "Faites défiler pour explorer",
+                "hero.meta.project": "PROJET",
+                "hero.meta.target": "CIBLE",
+                "hero.meta.status": "STATUT",
+                "menu.operator.label": "PROFIL OPÉRATEUR",
+                "menu.operator.value": "COMMUNAUTÉ",
+                "menu.status.label": "ÉTAT DU PROJET",
+                "menu.status.value": "EN DÉVELOPPEMENT",
+                "menu.kicker": "JUP9IW // CHOISISSEZ VOTRE OPÉRATION",
+                "menu.title": "Choisissez votre<br>destination.",
+                "menu.hq.title": "Quartier général",
+                "menu.hq.text": "Présentation du projet, de ses objectifs et de sa communauté.",
+                "menu.mod.title": "Opérations du mod",
+                "menu.mod.text": "Découvrez le mod non officiel Warzone 3 intégré au client JUP9IW.",
+                "menu.client.title": "Terminal client",
+                "menu.client.text": "Découvrez le client JUP9IW dédié et ses axes de travail.",
+                "menu.intel.title": "Actualités de mission",
+                "menu.intel.text": "Consultez les nouvelles du projet et les annonces de développement.",
+                "menu.action": "Ouvrir le briefing",
+                "menu.footer.left": "MOD WARZONE 3 // CLIENT JUP9IW",
+                "menu.footer.right": "CHOISISSEZ UN BRIEFING POUR CONTINUER",
+                "ops.tablist": "Briefing du projet JUP9IW",
+                "ops.kicker": "JUP9IW // CONSOLE D'OPÉRATIONS",
+                "ops.title": "Briefing du projet",
+                "ops.intro": "Découvrez le client JUP9IW, le mod Warzone 3 qu'il intègre et les étapes de développement de notre projet.",
+                "ops.tab.brief": "Briefing",
+                "ops.tab.mod": "Le mod",
+                "ops.tab.client": "Le client",
+                "ops.tab.roadmap": "Feuille de route",
+                "ops.brief.kicker": "BRIEFING DE MISSION // 001",
+                "ops.brief.title": "Un client.<br>Un mod intégré.",
+                "ops.brief.copy": "JUP9IW est le client qui intègre un mod non officiel pour Warzone 3, actuellement en développement par l'équipe JUP9IW. Ce briefing présente le client, le mod qu'il contient et les actualités de notre projet.",
+                "ops.stamp.project": "ID PROJET // JUP9IW",
+                "ops.brief.stamp": "MOD<br>WARZONE 3",
+                "ops.stamp.status": "STATUT // EN DÉVELOPPEMENT",
+                "ops.mod.kicker": "AXE DE TRAVAIL // 02",
+                "ops.mod.title": "Le mod<br>Warzone 3.",
+                "ops.mod.copy": "JUP9IW intègre un mod non officiel pour Warzone 3, actuellement développé par l'équipe JUP9IW. Les fonctionnalités et choix de conception du mod appartiennent à notre projet.",
+                "ops.stamp.workstream": "AXE DE TRAVAIL // MOD",
+                "ops.stamp.client": "AXE DE TRAVAIL // CLIENT",
+                "ops.mod.stamp": "PROJET<br>GAMEPLAY",
+                "ops.client.kicker": "AXE DE TRAVAIL // 03",
+                "ops.client.title": "Le client JUP9IW<br>et son mod intégré.",
+                "ops.client.copy": "JUP9IW est le client qui contient le mod Warzone 3. Le client et son mod intégré sont développés ensemble comme un seul projet non officiel par l'équipe JUP9IW.",
+                "ops.client.stamp": "CLIENT<br>JUP9IW",
+                "ops.client.note": "DÉTAILS // EN DÉFINITION",
+                "ops.roadmap.kicker": "PARCOURS DU PROJET // 04",
+                "ops.roadmap.title": "Du progrès,<br>pas des promesses.",
+                "ops.roadmap.copy": "La feuille de route suit le développement du client JUP9IW et du mod Warzone 3 qu'il intègre. L'équipe partagera l'avancement, les notes de compatibilité et les informations de sortie sur ses propres canaux; aucune date n'est annoncée ici.",
+                "ops.stamp.path": "PARCOURS PROJET // 4 ÉTAPES",
+                "ops.roadmap.stamp": "DU CADRAGE<br>À LA SORTIE",
+                "ops.roadmap.note": "DATES // NON ANNONCÉES",
+
+                "about.label": "01 / Le projet",
+                "about.title": "Le client JUP9IW<br>et son mod Warzone 3.",
+                "about.description": "JUP9IW est le client qui contient un mod non officiel pour Warzone 3, actuellement en développement par l'équipe JUP9IW.",
+                "about.p1": "<strong>JUP9IW</strong> est un client qui intègre un mod non officiel pour Warzone 3. Le client et le mod sont actuellement développés ensemble par notre équipe.",
+                "about.p2": "Le mod est inclus dans le client JUP9IW : il ne s'agit pas de deux produits séparés. Cette page rassemble les objectifs du mod, les informations sur le client et les nouvelles du projet.",
+                "about.p3": "Le mod Warzone 3 intégré à JUP9IW est non officiel et développé par l'équipe JUP9IW. Les choix de conception et le périmètre du mod relèvent de notre projet.",
+                "terminal.init": "lancement du projet jup9iw...",
+                "terminal.project": "projet =",
+                "terminal.target": "cible =",
+                "terminal.status": "type =",
+                "terminal.ready": "statut : en développement.",
+
+                "features.label": "02 / Axes du projet",
+                "features.title": "Le travail<br>en cours.",
+                "features.description": "Le client JUP9IW et son mod Warzone 3 intégré sont développés ensemble par notre équipe.",
+                "feature.1.title": "Mod Warzone 3",
+                "feature.1.text": "Un mod non officiel pour Warzone 3, intégré au client JUP9IW et actuellement en développement.",
+                "feature.2.title": "Client JUP9IW",
+                "feature.2.text": "JUP9IW est le client qui contient et lance le mod Warzone 3.",
+                "feature.3.title": "Communauté",
+                "feature.3.text": "Un espace où les joueurs et développeurs peuvent suivre les actualités et les annonces du projet.",
+                "feature.4.title": "Développement",
+                "feature.4.text": "Le client et son mod intégré sont développés comme un seul projet par l'équipe JUP9IW.",
+                "feature.5.title": "Actualités du projet",
+                "feature.5.text": "Suivez les canaux JUP9IW pour les nouvelles et les annonces de notre équipe.",
+                "feature.6.title": "À venir",
+                "feature.6.text": "Le projet évolue. De nouvelles informations seront publiées lorsqu'elles pourront être partagées.",
+
+                "season.label": "03 / Mod Warzone 3",
+                "season.title": "Le client JUP9IW<br><span>et son mod intégré.</span>",
+                "season.description": "JUP9IW est le client qui contient un mod non officiel pour Warzone 3, actuellement en développement par l'équipe JUP9IW.",
+                "season.badge": "EN DÉVELOPPEMENT",
+                "season.heading": "Un client avec son mod intégré",
+                "season.item.1": "🎮 Mod pour Warzone 3",
+                "season.item.2": "⚙️ Intégré au client JUP9IW",
+                "season.item.3": "🧭 Périmètre du projet en définition",
+                "season.item.4": "🔎 Compatibilité suivie par JUP9IW",
+                "season.item.5": "📋 Détails d'installation à venir",
+                "season.item.6": "🛠️ Nouvelles de l'équipe JUP9IW",
+                "season.item.7": "📦 Sortie non annoncée",
+                "season.item.8": "ℹ️ Mod non officiel JUP9IW",
+                "season.card1.title": "Mod Warzone 3",
+                "season.card1.text": "Un mod non officiel pour Warzone 3, actuellement développé par l'équipe JUP9IW et intégré directement au client.",
+                "season.card2.title": "Client JUP9IW",
+                "season.card2.text": "JUP9IW est le client qui contient le mod Warzone 3. Le client et son mod sont développés ensemble par notre équipe.",
+                "season.card3.title": "Suivi du développement",
+                "season.card3.text": "Suivez les nouvelles publiées par l'équipe JUP9IW sur le développement du client et du mod intégré.",
+
+                "news.label": "04 / Actualités du projet",
+                "news.title": "Dernières<br>actualités.",
+                "news.description": "Suivez le développement du client JUP9IW et du mod Warzone 3 non officiel qu'il contient.",
+                "news.1.title": "Le projet JUP9IW",
+                "news.1.text": "JUP9IW est le client qui intègre un mod non officiel pour Warzone 3, actuellement en développement.",
+                "news.2.tag": "DÉVELOPPEMENT",
+                "news.2.title": "Travail en cours",
+                "news.2.text": "L'équipe JUP9IW développe le client et le mod Warzone 3 intégré comme un seul projet.",
+                "news.3.tag": "COMMUNAUTÉ",
+                "news.3.title": "Suivre JUP9IW",
+                "news.3.text": "Rejoignez la communauté pour suivre les annonces et les actualités du développement.",
+                "news.4.tag": "PÉRIMÈTRE",
+                "news.4.title": "Définir le projet",
+                "news.4.text": "Le mod non officiel pour Warzone 3 est intégré au client JUP9IW et développé par notre équipe.",
+                "news.5.tag": "CLIENT",
+                "news.5.title": "Le client JUP9IW",
+                "news.5.text": "JUP9IW est le client qui contient le mod Warzone 3; client et mod avancent ensemble.",
+                "news.6.tag": "COMPATIBILITÉ",
+                "news.6.title": "Informations de sortie",
+                "news.6.text": "Les informations de compatibilité et de sortie seront publiées par l'équipe JUP9IW.",
+
+                "download.label": "05 / Suivre le projet",
+                "download.title": "Suivez le<br><span style=\"color:#e10600;\">développement.</span>",
+                "download.text": "Suivez les canaux JUP9IW pour les actualités sur le client et le mod Warzone 3 qu'il intègre.",
+
+                "faq.label": "06 / Informations",
+                "faq.title": "Questions<br>fréquentes.",
+                "faq.1.q": "Qu'est-ce que JUP9IW ?",
+                "faq.1.a": "JUP9IW est le client qui contient un mod non officiel pour Warzone 3, actuellement en développement par l'équipe JUP9IW.",
+                "faq.2.q": "Sur quoi se concentre le mod ?",
+                "faq.2.a": "Le mod Warzone 3 est intégré au client JUP9IW. Il est non officiel et développé par notre équipe.",
+                "faq.3.q": "Le client et son mod sont-ils déjà disponibles ?",
+                "faq.3.a": "Le client JUP9IW et son mod Warzone 3 intégré sont en développement. Les informations de sortie seront publiées sur les canaux JUP9IW.",
+                "faq.4.q": "Où suivre le développement ?",
+                "faq.4.a": "Suivez les canaux JUP9IW et le Discord du projet pour les nouvelles publiées par notre équipe.",
+                "faq.5.q": "Qu'est-ce que le client JUP9IW ?",
+                "faq.5.a": "JUP9IW est le client lui-même : il contient le mod non officiel Warzone 3, actuellement en développement.",
+
+                "credits.label": "07 / Crédits",
+                "credits.title": "Les membres<br>du projet.",
+                "credits.description": "Les membres du projet JUP9IW.",
+                "credits.link": "Crédits",
+
+                "footer.rights": "© 2026 JUP9IW. Tous droits réservés.",
+                "footer.community": "CLIENT JUP9IW // MOD WARZONE 3"
+            },
+
+            en: {
+                "nav.about": "About",
+                "nav.features": "Focus",
+                "nav.news": "News",
+                "nav.season6": "Warzone 3",
+                "nav.download": "Project",
+                "nav.faq": "FAQ",
+                "hero.status": "Mod in development",
+                "hero.subtitle": "JUP9IW is the client containing an unofficial Warzone 3 mod, currently in development. Follow the progress of the client and the mod built by the JUP9IW team.",
+                "hero.get": "Enter JUP9IW",
+                "hero.explore": "Project dossier",
+                "hero.scroll": "Scroll to explore",
+                "hero.meta.project": "PROJECT",
+                "hero.meta.target": "TARGET",
+                "hero.meta.status": "STATUS",
+                "menu.operator.label": "OPERATOR PROFILE",
+                "menu.operator.value": "COMMUNITY",
+                "menu.status.label": "PROJECT STATUS",
+                "menu.status.value": "IN DEVELOPMENT",
+                "menu.kicker": "JUP9IW // SELECT YOUR OPERATION",
+                "menu.title": "Choose your<br>destination.",
+                "menu.hq.title": "Project HQ",
+                "menu.hq.text": "The project overview, its purpose and the people around it.",
+                "menu.mod.title": "Mod operations",
+                "menu.mod.text": "Explore the unofficial Warzone 3 mod included in the JUP9IW client.",
+                "menu.client.title": "Client terminal",
+                "menu.client.text": "See the dedicated JUP9IW client and its workstreams.",
+                "menu.intel.title": "Mission updates",
+                "menu.intel.text": "Read project news, development notes and announcements.",
+                "menu.action": "Open briefing",
+                "menu.footer.left": "WARZONE 3 MOD // JUP9IW CLIENT",
+                "menu.footer.right": "SELECT A BRIEFING TO CONTINUE",
+                "ops.tablist": "JUP9IW project briefing",
+                "ops.kicker": "JUP9IW // OPERATIONS CONSOLE",
+                "ops.title": "Project briefing",
+                "ops.intro": "Learn about the JUP9IW client, its included Warzone 3 mod and the development path for our project.",
+                "ops.tab.brief": "Brief",
+                "ops.tab.mod": "The Mod",
+                "ops.tab.client": "The Client",
+                "ops.tab.roadmap": "Roadmap",
+                "ops.brief.kicker": "MISSION BRIEF // 001",
+                "ops.brief.title": "One client.<br>One integrated mod.",
+                "ops.brief.copy": "JUP9IW is the client containing an unofficial Warzone 3 mod, currently in development by the JUP9IW team. This briefing covers the client, the mod inside it and updates from our project.",
+                "ops.stamp.project": "PROJECT ID // JUP9IW",
+                "ops.brief.stamp": "WARZONE<br>3 MOD",
+                "ops.stamp.status": "STATUS // IN DEVELOPMENT",
+                "ops.mod.kicker": "WORKSTREAM // 02",
+                "ops.mod.title": "The Warzone 3<br>mod.",
+                "ops.mod.copy": "JUP9IW includes an unofficial Warzone 3 mod, currently developed by the JUP9IW team. The mod's features and design choices belong to our project.",
+                "ops.stamp.workstream": "WORKSTREAM // MOD",
+                "ops.stamp.client": "WORKSTREAM // CLIENT",
+                "ops.mod.stamp": "GAMEPLAY<br>PROJECT",
+                "ops.client.kicker": "WORKSTREAM // 03",
+                "ops.client.title": "The JUP9IW client<br>and its included mod.",
+                "ops.client.copy": "JUP9IW is the client that contains the Warzone 3 mod. The client and its included mod are being developed together as one unofficial project by the JUP9IW team.",
+                "ops.client.stamp": "JUP9IW<br>CLIENT",
+                "ops.client.note": "DETAILS // BEING DEFINED",
+                "ops.roadmap.kicker": "PROJECT PATH // 04",
+                "ops.roadmap.title": "Progress, not<br>promises.",
+                "ops.roadmap.copy": "The roadmap follows development of the JUP9IW client and its included Warzone 3 mod as one project. The team will share progress, compatibility notes and release information through JUP9IW channels; no dates are announced here.",
+                "ops.stamp.path": "PROJECT PATH // 04 STAGES",
+                "ops.roadmap.stamp": "SCOPE<br>TO RELEASE",
+                "ops.roadmap.note": "DATES // NOT ANNOUNCED",
+
+                "about.label": "01 / The Project",
+                "about.title": "The JUP9IW client<br>and its Warzone 3 mod.",
+                "about.description": "JUP9IW is the client containing an unofficial Warzone 3 mod, currently in development by the JUP9IW team.",
+                "about.p1": "<strong>JUP9IW</strong> is a client that includes an unofficial mod for Warzone 3. The client and mod are currently being developed together by our team.",
+                "about.p2": "The mod is included in the JUP9IW client; they are not two separate products. This page brings together the mod's goals, client information and project news.",
+                "about.p3": "The Warzone 3 mod inside JUP9IW is unofficial and developed by the JUP9IW team. The mod's design choices and scope belong to our project.",
+                "terminal.init": "starting jup9iw project...",
+                "terminal.project": "project =",
+                "terminal.target": "target =",
+                "terminal.status": "type =",
+                "terminal.ready": "status: in development.",
+
+                "features.label": "02 / Project Focus",
+                "features.title": "The work<br>in progress.",
+                "features.description": "The JUP9IW client and its integrated Warzone 3 mod are being developed together by our team.",
+                "feature.1.title": "Warzone 3 Mod",
+                "feature.1.text": "An unofficial Warzone 3 mod included in the JUP9IW client and currently in development.",
+                "feature.2.title": "JUP9IW Client",
+                "feature.2.text": "JUP9IW is the client that contains and runs the Warzone 3 mod.",
+                "feature.3.title": "Community",
+                "feature.3.text": "A place for players and developers to follow project updates and announcements.",
+                "feature.4.title": "Development",
+                "feature.4.text": "The client and its included mod are being developed as one project by the JUP9IW team.",
+                "feature.5.title": "Project Updates",
+                "feature.5.text": "Follow JUP9IW channels for updates and announcements from our team.",
+                "feature.6.title": "More to Come",
+                "feature.6.text": "The project is evolving. Further information will be published when it is ready to share.",
+
+                "season.label": "03 / Warzone 3 Mod",
+                "season.title": "The JUP9IW client<br><span>and its included mod.</span>",
+                "season.description": "JUP9IW is the client containing an unofficial Warzone 3 mod, currently in development by the JUP9IW team.",
+                "season.badge": "IN DEVELOPMENT",
+                "season.heading": "One client with its integrated mod",
+                "season.item.1": "🎮 Mod for Warzone 3",
+                "season.item.2": "⚙️ Included in the JUP9IW client",
+                "season.item.3": "🧭 Project scope being defined",
+                "season.item.4": "🔎 Compatibility work by JUP9IW",
+                "season.item.5": "📋 Installation details to come",
+                "season.item.6": "🛠️ Updates from the JUP9IW team",
+                "season.item.7": "📦 Release plans not announced",
+                "season.item.8": "ℹ️ Unofficial JUP9IW mod",
+                "season.card1.title": "Warzone 3 Mod",
+                "season.card1.text": "An unofficial Warzone 3 mod, currently developed by the JUP9IW team and integrated directly into the client.",
+                "season.card2.title": "JUP9IW Client",
+                "season.card2.text": "JUP9IW is the client that contains the Warzone 3 mod. Our team develops the client and mod together.",
+                "season.card3.title": "Development Updates",
+                "season.card3.text": "Follow updates from the JUP9IW team about development of the client and its included mod.",
+
+                "news.label": "04 / Project News",
+                "news.title": "Latest<br>updates.",
+                "news.description": "Follow development of the JUP9IW client and the unofficial Warzone 3 mod it contains.",
+                "news.1.title": "JUP9IW project",
+                "news.1.text": "JUP9IW is the client containing an unofficial Warzone 3 mod, currently in development.",
+                "news.2.tag": "DEVELOPMENT",
+                "news.2.title": "Work in progress",
+                "news.2.text": "The JUP9IW team is developing the client and its integrated Warzone 3 mod as one project.",
+                "news.3.tag": "COMMUNITY",
+                "news.3.title": "Follow JUP9IW",
+                "news.3.text": "Join the community to follow project announcements and development updates.",
+                "news.4.tag": "PROJECT SCOPE",
+                "news.4.title": "Defining the project",
+                "news.4.text": "The unofficial Warzone 3 mod is integrated into the JUP9IW client and developed by our team.",
+                "news.5.tag": "CLIENT",
+                "news.5.title": "About the JUP9IW client",
+                "news.5.text": "JUP9IW is the client containing the Warzone 3 mod; both are developed together.",
+                "news.6.tag": "COMPATIBILITY",
+                "news.6.title": "Release information",
+                "news.6.text": "The JUP9IW team will share compatibility and release information through project channels.",
+
+                "download.label": "05 / Project Access",
+                "download.title": "Follow the<br><span style=\"color:#e10600;\">development.</span>",
+                "download.text": "Follow JUP9IW channels for news about the client and the Warzone 3 mod it contains.",
+
+                "faq.label": "06 / Project Information",
+                "faq.title": "Frequently<br>asked.",
+                "faq.1.q": "What is JUP9IW?",
+                "faq.1.a": "JUP9IW is the client containing an unofficial Warzone 3 mod, currently in development by the JUP9IW team.",
+                "faq.2.q": "What is the mod focused on?",
+                "faq.2.a": "The Warzone 3 mod is integrated into the JUP9IW client. It is unofficial and developed by our team.",
+                "faq.3.q": "Are the client and its mod available yet?",
+                "faq.3.a": "The JUP9IW client and its integrated Warzone 3 mod are in development. Release information will be shared through JUP9IW channels.",
+                "faq.4.q": "Where can I follow development?",
+                "faq.4.a": "Follow JUP9IW channels and the project Discord for updates published by our team.",
+                "faq.5.q": "What is the JUP9IW client?",
+                "faq.5.a": "JUP9IW is the client itself: it contains the unofficial Warzone 3 mod currently in development.",
+
+                "credits.label": "07 / Credits",
+                "credits.title": "Project<br>members.",
+                "credits.description": "The members of the JUP9IW project.",
+                "credits.link": "Credits",
+
+                "footer.rights": "© 2026 JUP9IW. All rights reserved.",
+                "footer.community": "JUP9IW CLIENT // WARZONE 3 MOD"
+            }
+        };
+
+        const languageElements = [
+            ["nav.about", ".nav-links li:nth-child(1) a"],
+            ["nav.features", ".nav-links li:nth-child(2) a"],
+            ["nav.news", ".nav-links li:nth-child(3) a"],
+            ["nav.season6", ".nav-links li:nth-child(4) a"],
+            ["nav.download", ".nav-links li:nth-child(5) a"],
+            ["nav.faq", ".nav-links li:nth-child(5) a"],
+            ["hero.status", ".status"],
+            ["hero.subtitle", ".hero-subtitle"],
+            ["hero.get", ".hero-buttons .btn-primary"],
+            ["hero.explore", ".hero-buttons .btn-secondary"],
+            ["hero.scroll", ".scroll-indicator"],
+            ["hero.meta.project", ".hero-meta > div:nth-child(1) span"],
+            ["hero.meta.target", ".hero-meta > div:nth-child(2) span"],
+            ["hero.meta.status", ".hero-meta > div:nth-child(3) span"],
+            ["about.label", "#about .section-label"],
+            ["about.title", "#about .section-title"],
+            ["about.description", "#about .section-description"],
+            ["about.p1", "#about .about-text p:nth-of-type(1)"],
+            ["about.p2", "#about .about-text p:nth-of-type(2)"],
+            ["about.p3", "#about .about-text p:nth-of-type(3)"],
+            ["terminal.init", ".terminal-content > div:nth-child(1)"],
+            ["terminal.project", ".terminal-content > div:nth-child(2)"],
+            ["terminal.target", ".terminal-content > div:nth-child(3)"],
+            ["terminal.status", ".terminal-content > div:nth-child(4)"],
+            ["terminal.ready", ".terminal-content > div:nth-child(6)"],
+            ["features.label", "#features .section-label"],
+            ["features.title", "#features .section-title"],
+            ["features.description", "#features .section-description"],
+            ["feature.1.title", ".feature:nth-child(1) h3"],
+            ["feature.1.text", ".feature:nth-child(1) p"],
+            ["feature.2.title", ".feature:nth-child(2) h3"],
+            ["feature.2.text", ".feature:nth-child(2) p"],
+            ["feature.3.title", ".feature:nth-child(3) h3"],
+            ["feature.3.text", ".feature:nth-child(3) p"],
+            ["feature.4.title", ".feature:nth-child(4) h3"],
+            ["feature.4.text", ".feature:nth-child(4) p"],
+            ["feature.5.title", ".feature:nth-child(5) h3"],
+            ["feature.5.text", ".feature:nth-child(5) p"],
+            ["feature.6.title", ".feature:nth-child(6) h3"],
+            ["feature.6.text", ".feature:nth-child(6) p"],
+            ["season.label", "#season6 .section-label"],
+            ["season.title", "#season6 .section-title"],
+            ["season.description", "#season6 .section-description"],
+            ["season.badge", ".season6-unlock-badge"],
+            ["season.heading", ".season6-unlock h3"],
+            ["season.item.1", ".season6-grid div:nth-child(1)"],
+            ["season.item.2", ".season6-grid div:nth-child(2)"],
+            ["season.item.3", ".season6-grid div:nth-child(3)"],
+            ["season.item.4", ".season6-grid div:nth-child(4)"],
+            ["season.item.5", ".season6-grid div:nth-child(5)"],
+            ["season.item.6", ".season6-grid div:nth-child(6)"],
+            ["season.item.7", ".season6-grid div:nth-child(7)"],
+            ["season.item.8", ".season6-grid div:nth-child(8)"],
+            ["season.card1.title", ".season6-card:nth-child(1) h3"],
+            ["season.card1.text", ".season6-card:nth-child(1) p"],
+            ["season.card2.title", ".season6-card:nth-child(2) h3"],
+            ["season.card2.text", ".season6-card:nth-child(2) p"],
+            ["season.card3.title", ".season6-card:nth-child(3) h3"],
+            ["season.card3.text", ".season6-card:nth-child(3) p"],
+            ["news.label", "#news .section-label"],
+            ["news.title", "#news .section-title"],
+            ["news.description", "#news .section-description"],
+            ["news.1.title", ".news-card:nth-child(1) h3"],
+            ["news.1.text", ".news-card:nth-child(1) p"],
+            ["news.2.tag", ".news-card:nth-child(2) .news-date"],
+            ["news.2.title", ".news-card:nth-child(2) h3"],
+            ["news.2.text", ".news-card:nth-child(2) p"],
+            ["news.3.tag", ".news-card:nth-child(3) .news-date"],
+            ["news.3.title", ".news-card:nth-child(3) h3"],
+            ["news.3.text", ".news-card:nth-child(3) p"],
+            ["news.4.tag", ".news-card:nth-child(4) .news-date"],
+            ["news.4.title", ".news-card:nth-child(4) h3"],
+            ["news.4.text", ".news-card:nth-child(4) p"],
+            ["news.5.tag", ".news-card:nth-child(5) .news-date"],
+            ["news.5.title", ".news-card:nth-child(5) h3"],
+            ["news.5.text", ".news-card:nth-child(5) p"],
+            ["news.6.tag", ".news-card:nth-child(6) .news-date"],
+            ["news.6.title", ".news-card:nth-child(6) h3"],
+            ["news.6.text", ".news-card:nth-child(6) p"],
+            ["download.label", "#download .section-label"],
+            ["download.title", "#download h2"],
+            ["download.text", "#download > p"],
+            ["faq.label", "#faq .section-label"],
+            ["faq.title", "#faq .section-title"],
+            ["faq.1.q", ".faq-item:nth-child(1) .faq-question"],
+            ["faq.1.a", ".faq-item:nth-child(1) .faq-answer p"],
+            ["faq.2.q", ".faq-item:nth-child(2) .faq-question"],
+            ["faq.2.a", ".faq-item:nth-child(2) .faq-answer p"],
+            ["faq.3.q", ".faq-item:nth-child(3) .faq-question"],
+            ["faq.3.a", ".faq-item:nth-child(3) .faq-answer p"],
+            ["faq.4.q", ".faq-item:nth-child(4) .faq-question"],
+            ["faq.4.a", ".faq-item:nth-child(4) .faq-answer p"],
+            ["faq.5.q", ".faq-item:nth-child(5) .faq-question"],
+            ["faq.5.a", ".faq-item:nth-child(5) .faq-answer p"],
+            ["footer.rights", ".footer-bottom span:nth-child(1)"],
+            ["footer.community", ".footer-bottom span:nth-child(2)"]
+        ];
+
+        function setLanguage(lang) {
+            const dictionary = translations[lang];
+
+            languageElements.forEach(([key, selector]) => {
+                const element = document.querySelector(selector);
+                if (element && dictionary[key] !== undefined) {
+                    const symbol = selector.includes(".faq-question")
+                        ? element.querySelector("span")
+                        : null;
+                    element.innerHTML = dictionary[key];
+                    if (symbol) {
+                        element.appendChild(symbol);
+                    }
+                }
+            });
+
+            document.querySelectorAll("[data-i18n]").forEach(element => {
+                const key = element.dataset.i18n;
+                if (dictionary[key] !== undefined) {
+                    element.innerHTML = dictionary[key];
+                }
+            });
+
+            document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+                const key = element.dataset.i18nAria;
+                if (dictionary[key] !== undefined) {
+                    element.setAttribute("aria-label", dictionary[key]);
+                }
+            });
+
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll(".language-switcher button").forEach(button => {
+                button.classList.toggle("active", button.dataset.lang === lang);
+            });
+
+            localStorage.setItem("jup9iw-language", lang);
+        }
+
+        document.querySelectorAll(".language-switcher button").forEach(button => {
+            button.addEventListener("click", () => {
+                setLanguage(button.dataset.lang);
+            });
+        });
+
+        const savedLanguage = localStorage.getItem("jup9iw-language");
+        const browserLanguage = navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
+        setLanguage(savedLanguage || browserLanguage);
+
+
+        /* =====================================================
+           PROJECT BRIEFING TABS
+        ===================================================== */
+
+        const opsTabs = Array.from(document.querySelectorAll(".ops-tab"));
+        const opsPanels = Array.from(document.querySelectorAll(".ops-panel"));
+
+        function activateOpsTab(tab, moveFocus = false) {
+            const selectedPanel = document.getElementById(tab.getAttribute("aria-controls"));
+
+            opsTabs.forEach(item => {
+                const isSelected = item === tab;
+                item.setAttribute("aria-selected", String(isSelected));
+                item.tabIndex = isSelected ? 0 : -1;
+            });
+
+            opsPanels.forEach(panel => {
+                const isSelected = panel === selectedPanel;
+                panel.hidden = !isSelected;
+                panel.classList.toggle("is-active", isSelected);
+            });
+
+            if (moveFocus) {
+                tab.focus();
+            }
+        }
+
+        opsTabs.forEach((tab, index) => {
+            tab.addEventListener("click", () => activateOpsTab(tab));
+
+            tab.addEventListener("keydown", event => {
+                let nextIndex = index;
+
+                if (event.key === "ArrowRight") {
+                    nextIndex = (index + 1) % opsTabs.length;
+                } else if (event.key === "ArrowLeft") {
+                    nextIndex = (index - 1 + opsTabs.length) % opsTabs.length;
+                } else if (event.key === "Home") {
+                    nextIndex = 0;
+                } else if (event.key === "End") {
+                    nextIndex = opsTabs.length - 1;
+                } else {
+                    return;
+                }
+
+                event.preventDefault();
+                activateOpsTab(opsTabs[nextIndex], true);
+            });
+        });
+
+
+
+        /* =====================================================
+           MOBILE MENU
+        ===================================================== */
+
+        function toggleMenu() {
+
+            const links =
+                document.querySelector(".nav-links");
+
+            if (links.style.display === "flex") {
+
+                links.style.display = "none";
+
+            } else {
+
+                links.style.display = "flex";
+
+                links.style.position = "absolute";
+                links.style.top = "65px";
+                links.style.left = "0";
+                links.style.width = "100%";
+
+                links.style.flexDirection = "column";
+
+                links.style.padding = "25px";
+
+                links.style.background =
+                    "rgba(5,5,5,.97)";
+
+                links.style.borderBottom =
+                    "1px solid #222";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
